@@ -29,6 +29,6 @@ class Server : AbstractVerticle() {
 
         vertx.createHttpServer().requestHandler({
             router.accept(it)
-        }).listen(8080)
+        }).listen(7777)
     }
 }
