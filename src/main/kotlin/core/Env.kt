@@ -16,28 +16,15 @@
 
 package core
 
-import junit.framework.TestCase
-import kotlinx.collections.immutable.immutableMapOf
-import org.junit.Test
+import kotlinx.collections.immutable.ImmutableMap
 
 
-class BobEnvTest : TestCase() {
+data class Env(val envVars: ImmutableMap<String, String>)
 
-    @Test
-    fun testAddEnvVar() {
-        val vars = immutableMapOf(Pair("k1", "v1"))
-        val env = BobEnv(vars)
-        val newEnv = core.addEnvVarIn(env, key="k2", value="v2")
+fun addEnvVarIn(env: Env, key: String, value: String): Env {
+    return Env(env.envVars.put(key, value))
+}
 
-        assertEquals(newEnv.envVars["k2"], "v2")
-    }
-
-    @Test
-    fun testRemoveEnvVar() {
-        val vars = immutableMapOf(Pair("k1", "v1"))
-        val env = BobEnv(vars)
-        val newEnv = core.removeEnvVarFrom(env, "k1")
-
-        assertNull(newEnv.envVars["k1"])
-    }
+fun removeEnvVarFrom(env: Env, key: String): Env {
+    return Env(env.envVars.remove(key))
 }
