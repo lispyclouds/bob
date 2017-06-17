@@ -36,6 +36,10 @@ buildscript {
 
 repositories {
     mavenCentral()
+
+    maven {
+        url "http://dl.bintray.com/kotlin/kotlinx"
+    }
 }
 
 dependencies {
@@ -43,6 +47,8 @@ dependencies {
 
     compile "io.vertx:vertx-core:$vertx_version"
     compile "io.vertx:vertx-web:$vertx_version"
+
+    compile "org.jetbrains.kotlinx:kotlinx-collections-immutable:0.1"
 
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
