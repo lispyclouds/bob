@@ -21,15 +21,15 @@ class Server : AbstractVerticle() {
     override fun start() {
         val router = Router.router(vertx)
 
-        router.get("/status/").handler({ request ->
+        router.get("/status/").handler { request ->
             request
                     .response()
                     .putHeader("content-type", "application/json")
                     .end("{\"status\": \"Ok\"}")
-        })
+        }
 
-        vertx.createHttpServer().requestHandler({
+        vertx.createHttpServer().requestHandler {
             router.accept(it)
-        }).listen(7777)
+        }.listen(7777)
     }
 }
