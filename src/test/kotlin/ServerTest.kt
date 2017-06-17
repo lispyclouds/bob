@@ -30,7 +30,7 @@ import java.io.IOException
 class ServerTest {
 
     private var vertx: Vertx? = null
-    private var port: Int = 7777
+    private val port: Int = 7777
 
     @Before
     @Throws(IOException::class)
