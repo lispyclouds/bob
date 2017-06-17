@@ -80,10 +80,11 @@ jar {
 
 jacocoTestReport {
     reports {
-        xml.enabled true
+        xml.setEnabled true
         xml.destination file("${buildDir}/reports/jacoco/report.xml")
-        csv.enabled false
-        html.enabled false
+
+        csv.setEnabled false
+        html.setEnabled false
     }
 }
 
