@@ -60,6 +60,8 @@ dependencies {
 
     compile "org.jetbrains.kotlinx:kotlinx-collections-immutable:0.1"
 
+    compile "com.google.code.gson:gson:2.8.1"
+
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
 

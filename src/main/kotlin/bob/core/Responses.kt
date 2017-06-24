@@ -16,17 +16,5 @@
 
 package bob.core
 
-import bob.util.jsonResponse
-import io.vertx.ext.web.Route
-import io.vertx.ext.web.Router
 
-
-internal fun addStatus(router: Router): Route {
-    return router.get("/status/").handler { request ->
-        jsonResponse(request, GenericResponse(message = "Ok"))
-    }
-}
-
-fun setupRoutesWith(router: Router) {
-    addStatus(router)
-}
+data class GenericResponse(val message: String)
