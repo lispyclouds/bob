@@ -18,7 +18,6 @@ package bob.core
 
 import io.vertx.ext.web.Route
 import io.vertx.ext.web.Router
-import kotlinx.collections.immutable.immutableListOf
 
 
 internal fun addStatus(router: Router): Route {
@@ -30,8 +29,6 @@ internal fun addStatus(router: Router): Route {
     }
 }
 
-fun setupRoutesWith(router: Router): Boolean {
-    val routes = immutableListOf(addStatus(router))
-
-    return routes.all { it is Route }
+fun setupRoutesWith(router: Router) {
+    addStatus(router)
 }
