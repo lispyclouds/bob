@@ -23,7 +23,7 @@ import java.util.UUID
 
 fun generateID() = UUID.randomUUID().toString()
 
-fun <T> jsonResponse(ctx: RoutingContext, obj: T) {
+fun <T> jsonResponseOf(ctx: RoutingContext, obj: T) {
     val gson = Gson()
 
     ctx.response()
