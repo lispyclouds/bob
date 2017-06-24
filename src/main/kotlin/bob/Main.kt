@@ -37,8 +37,7 @@ fun main(args: Array<String>) {
         if (it.succeeded()) {
             println("Yes we can!")
             println("Come over to port $port and tell me all about it.")
-        }
-        else {
+        } else {
             println("No we can't as: \"${it.cause()}\" happened!")
             exitProcess(1)
         }
