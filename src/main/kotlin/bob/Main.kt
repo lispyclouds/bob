@@ -25,7 +25,7 @@ import kotlin.system.exitProcess
 fun main(args: Array<String>) {
     val vertx = Vertx.vertx()
     val server = vertx.createHttpServer()
-    val port = 80
+    val port = 7777
     val router = Router.router(vertx)
 
     setupRoutesWith(router)
