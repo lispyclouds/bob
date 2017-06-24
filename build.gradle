@@ -103,7 +103,7 @@ jacocoTestReport {
         classDirectories = files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
                     "bob/MainKt*",
-                    "bob/core/RoutesKt"
+                    "bob/core/RoutesKt*"
             ])
         })
     }
