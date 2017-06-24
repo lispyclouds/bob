@@ -14,30 +14,20 @@
  * along with Bob. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package core
+package bob.core
 
+import io.vertx.core.Vertx
+import io.vertx.ext.web.Router
 import junit.framework.TestCase
-import kotlinx.collections.immutable.immutableMapOf
 import org.junit.Test
 
 
-class EnvTest : TestCase() {
+class RoutesTest : TestCase() {
 
     @Test
-    fun testAddEnvVar() {
-        val vars = immutableMapOf(Pair("k1", "v1"))
-        val env = Env(vars)
-        val newEnv = core.addEnvVarIn(env, key="k2", value="v2")
+    fun testAddRoutes() {
+        val router = Router.router(Vertx.vertx())
 
-        assertEquals(newEnv.envVars["k2"], "v2")
-    }
-
-    @Test
-    fun testRemoveEnvVar() {
-        val vars = immutableMapOf(Pair("k1", "v1"))
-        val env = Env(vars)
-        val newEnv = core.removeEnvVarFrom(env, "k1")
-
-        assertNull(newEnv.envVars["k1"])
+        assertTrue(setupRoutesWith(router))
     }
 }

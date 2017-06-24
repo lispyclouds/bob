@@ -14,20 +14,17 @@
  * along with Bob. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package util
+package bob.core
 
-import junit.framework.TestCase
-import org.junit.Test
-import kotlin.test.assertNotEquals
+import kotlinx.collections.immutable.ImmutableMap
 
 
-class ToolsTest : TestCase() {
+data class Env(val envVars: ImmutableMap<String, String>)
 
-    @Test
-    fun testGenerateID() {
-        val id1 = generateID()
-        val id2 = generateID()
+fun addEnvVarIn(env: Env, key: String, value: String): Env {
+    return Env(env.envVars.put(key, value))
+}
 
-        assertNotEquals(id1, id2)
-    }
+fun removeEnvVarFrom(env: Env, key: String): Env {
+    return Env(env.envVars.remove(key))
 }

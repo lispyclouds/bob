@@ -14,23 +14,24 @@
  * along with Bob. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import io.vertx.core.AbstractVerticle
+package bob.core
+
+import io.vertx.ext.web.Route
 import io.vertx.ext.web.Router
+import kotlinx.collections.immutable.immutableListOf
 
 
-class Server : AbstractVerticle() {
-    override fun start() {
-        val router = Router.router(vertx)
-
-        router.get("/status/").handler { request ->
-            request
-                    .response()
-                    .putHeader("content-type", "application/json")
-                    .end("{\"status\": \"Ok\"}")
-        }
-
-        vertx.createHttpServer().requestHandler {
-            router.accept(it)
-        }.listen(7777)
+internal fun addStatus(router: Router): Route {
+    return router.get("/status/").handler { request ->
+        request
+                .response()
+                .putHeader("content-type", "application/json")
+                .end("{\"status\": \"Ok\"}")
     }
+}
+
+fun setupRoutesWith(router: Router): Boolean {
+    val routes = immutableListOf(addStatus(router))
+
+    return routes.all { it is Route }
 }

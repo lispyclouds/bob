@@ -82,8 +82,7 @@ compileKotlin {
 
 shadowJar {
     manifest {
-        attributes "Main-Class": "io.vertx.core.Launcher"
-        attributes "Main-Verticle": "Server"
+        attributes "Main-Class": "bob.MainKt"
         attributes "Description": "Bob the Builder"
     }
 
@@ -98,5 +97,11 @@ jacocoTestReport {
 
         csv.setEnabled false
         html.setEnabled false
+    }
+
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: ["bob/MainKt*"])
+        })
     }
 }

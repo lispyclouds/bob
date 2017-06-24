@@ -14,9 +14,30 @@
  * along with Bob. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package util
+package bob.core
 
-import java.util.UUID
+import junit.framework.TestCase
+import kotlinx.collections.immutable.immutableMapOf
+import org.junit.Test
 
 
-fun generateID() = UUID.randomUUID().toString()
+class EnvTest : TestCase() {
+
+    @Test
+    fun testAddEnvVar() {
+        val vars = immutableMapOf(Pair("k1", "v1"))
+        val env = Env(vars)
+        val newEnv = bob.core.addEnvVarIn(env, key="k2", value="v2")
+
+        assertEquals(newEnv.envVars["k2"], "v2")
+    }
+
+    @Test
+    fun testRemoveEnvVar() {
+        val vars = immutableMapOf(Pair("k1", "v1"))
+        val env = Env(vars)
+        val newEnv = bob.core.removeEnvVarFrom(env, "k1")
+
+        assertNull(newEnv.envVars["k1"])
+    }
+}
