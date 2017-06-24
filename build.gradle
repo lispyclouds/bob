@@ -15,9 +15,9 @@
  */
 
 apply plugin: "kotlin"
-apply plugin: "jacoco"
 apply plugin: "com.github.ben-manes.versions"
 apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: "org.junit.platform.gradle.plugin"
 
 version "0.1-SNAPSHOT"
 sourceCompatibility = "1.8"
@@ -41,15 +41,15 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.github.ben-manes:gradle-versions-plugin:0.15.0"
         classpath "com.github.jengelman.gradle.plugins:shadow:2.0.1"
+        classpath "org.junit.platform:junit-platform-gradle-plugin:1.0.0-M4"
     }
 }
 
 repositories {
     mavenCentral()
 
-    maven {
-        url "http://dl.bintray.com/kotlin/kotlinx"
-    }
+    maven { url "http://dl.bintray.com/kotlin/kotlinx" }
+    maven { url "http://dl.bintray.com/jetbrains/spek" }
 }
 
 dependencies {
@@ -65,7 +65,16 @@ dependencies {
 
     testCompile "io.vertx:vertx-unit:$vertx_version"
 
-    testCompile "junit:junit:4.12"
+    testCompile "org.jetbrains.spek:spek-api:1.1.2"
+    testRuntime "org.jetbrains.spek:spek-junit-platform-engine:1.1.2"
+}
+
+junitPlatform {
+    filters {
+        engines {
+            include 'spek'
+        }
+    }
 }
 
 kotlin {
@@ -88,23 +97,4 @@ shadowJar {
 
     baseName = "bob-server"
     classifier = "standalone"
-}
-
-jacocoTestReport {
-    reports {
-        xml.setEnabled true
-        xml.destination file("${buildDir}/reports/jacoco/report.xml")
-
-        csv.setEnabled false
-        html.setEnabled false
-    }
-
-    afterEvaluate {
-        classDirectories = files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: [
-                    "bob/MainKt*",
-                    "bob/core/RoutesKt*"
-            ])
-        })
-    }
 }

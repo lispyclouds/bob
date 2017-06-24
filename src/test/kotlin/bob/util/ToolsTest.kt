@@ -16,18 +16,22 @@
 
 package bob.util
 
-import junit.framework.TestCase
-import org.junit.Test
+import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.given
+import org.jetbrains.spek.api.dsl.it
+import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertNotEquals
 
 
-class ToolsTest : TestCase() {
+object ToolsTest : Spek({
+    given("Bob Tools") {
+        on("generating two IDs") {
+            val id1 = generateID()
+            val id2 = generateID()
 
-    @Test
-    fun testGenerateID() {
-        val id1 = generateID()
-        val id2 = generateID()
-
-        assertNotEquals(id1, id2)
+            it("should not be equal") {
+                assertNotEquals(id1, id2)
+            }
+        }
     }
-}
+})

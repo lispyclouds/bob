@@ -1,6 +1,5 @@
 [![License: GPL v3](https://img.shields.io/badge/license-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Build Status](https://travis-ci.org/lispyclouds/bob.svg?branch=master)](https://travis-ci.org/lispyclouds/bob)
-[![codecov](https://codecov.io/gh/lispyclouds/bob/branch/master/graph/badge.svg)](https://codecov.io/gh/lispyclouds/bob)
 
 # Bob the Builder
 
