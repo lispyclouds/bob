@@ -17,7 +17,7 @@ This is what CI/CD should've been.
 
 ## Testing, building and running
 - Run `./gradlew test` to run tests.
-- Run `./gradlew clean shadowJar` to get the standalone JAR.
-- Run `java -jar <JAR_file>` to start the server on port **7777**.
+- Run `./gradlew shadowJar` to get the standalone JAR in `build/libs`.
+- Run `java -jar <JAR_file_path>` to start the server on port **7777**.
 
 **Bob the Builder image is ©BBC**

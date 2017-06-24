@@ -86,6 +86,9 @@ shadowJar {
         attributes "Main-Verticle": "Server"
         attributes "Description": "Bob the Builder"
     }
+
+    baseName = "bob-server"
+    classifier = "standalone"
 }
 
 jacocoTestReport {
