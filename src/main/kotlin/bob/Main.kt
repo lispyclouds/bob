@@ -19,12 +19,13 @@ package bob
 import bob.core.setupRoutesWith
 import io.vertx.core.Vertx
 import io.vertx.ext.web.Router
+import kotlin.system.exitProcess
 
 
 fun main(args: Array<String>) {
     val vertx = Vertx.vertx()
     val server = vertx.createHttpServer()
-    val port = 7777
+    val port = 80
     val router = Router.router(vertx)
 
     setupRoutesWith(router)
@@ -35,10 +36,11 @@ fun main(args: Array<String>) {
     }.listen(port) {
         if (it.succeeded()) {
             println("Yes we can!")
-            println("Lets talk over port $port")
+            println("Come over to port $port and tell me all about it.")
         }
         else {
-            println("No we can't as: ${it.cause()}")
+            println("No we can't as: \"${it.cause()}\" happened!")
+            exitProcess(1)
         }
     }
 }
