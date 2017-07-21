@@ -17,16 +17,13 @@
 package bob.util
 
 import com.google.gson.Gson
-import io.vertx.ext.web.RoutingContext
-import java.util.UUID
+import spark.Response
+import java.util.*
 
 
 fun generateID() = UUID.randomUUID().toString()
 
-fun <T> jsonResponseOf(ctx: RoutingContext, obj: T) {
-    val gson = Gson()
-
-    ctx.response()
-            .putHeader("content-type", "application/json")
-            .end(gson.toJson(obj))
+fun <T> jsonResponseOf(response: Response, obj: T): String {
+    response.type("application/json")
+    return Gson().toJson(obj)
 }

@@ -16,30 +16,18 @@
 
 package bob
 
-import bob.core.setupRoutesWith
-import io.vertx.core.Vertx
-import io.vertx.ext.web.Router
-import kotlin.system.exitProcess
+import bob.core.GenericResponse
+import bob.util.jsonResponseOf
+import spark.Spark
+import spark.kotlin.port
 
 
 fun main(args: Array<String>) {
-    val vertx = Vertx.vertx()
-    val server = vertx.createHttpServer()
-    val port = 7777
-    val router = Router.router(vertx)
+    port(7777)
 
-    setupRoutesWith(router)
+    Spark.get("/status") { req, res ->
+        res.status(200)
 
-    println("Can we build it?")
-    server.requestHandler {
-        router.accept(it)
-    }.listen(port) {
-        if (it.succeeded()) {
-            println("Yes we can!")
-            println("Come over to port $port and tell me all about it.")
-        } else {
-            println("No we can't as: \"${it.cause()}\" happened!")
-            exitProcess(1)
-        }
+        jsonResponseOf(res, GenericResponse("Ok"))
     }
 }
