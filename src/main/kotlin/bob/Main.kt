@@ -18,17 +18,40 @@
 package bob
 
 import bob.core.GenericResponse
-import bob.util.jsonResponseOf
-import spark.Spark
-import spark.kotlin.port
+import bob.util.jsonStringOf
+import org.jetbrains.ktor.application.Application
+import org.jetbrains.ktor.application.call
+import org.jetbrains.ktor.application.install
+import org.jetbrains.ktor.features.DefaultHeaders
+import org.jetbrains.ktor.host.embeddedServer
+import org.jetbrains.ktor.http.ContentType
+import org.jetbrains.ktor.logging.CallLogging
+import org.jetbrains.ktor.netty.Netty
+import org.jetbrains.ktor.response.respondText
+import org.jetbrains.ktor.routing.Routing
+import org.jetbrains.ktor.routing.get
 
+
+fun Application.module() {
+    install(DefaultHeaders)
+
+    install(CallLogging)
+
+    install(Routing) {
+        get("/status") {
+            call.respondText(
+                    jsonStringOf(GenericResponse("Ok")),
+                    ContentType.Application.Json
+            )
+        }
+    }
+}
 
 fun main(args: Array<String>) {
-    port(7777)
-
-    Spark.get("/status") { req, res ->
-        res.status(200)
-
-        jsonResponseOf(res, GenericResponse("Ok"))
-    }
+    embeddedServer(
+            Netty,
+            port = 7777,
+            reloadPackages = listOf("MainKt"),
+            module = Application::module
+    ).start()
 }

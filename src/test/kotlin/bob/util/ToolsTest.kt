@@ -17,11 +17,13 @@
 
 package bob.util
 
+import bob.core.GenericResponse
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.given
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 
 
 object ToolsTest : Spek({
@@ -32,6 +34,14 @@ object ToolsTest : Spek({
 
             it("should not be equal") {
                 assertNotEquals(id1, id2)
+            }
+        }
+
+        on("calling jsonStringOf with an object") {
+            val res = GenericResponse("Ok")
+
+            it("should give a JSON string") {
+                assertTrue(jsonStringOf(res) == "{\"message\":\"Ok\"}")
             }
         }
     }

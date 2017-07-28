@@ -18,12 +18,8 @@
 package bob.util
 
 import com.google.gson.Gson
-import spark.Response
 
 
 fun generateID() = java.util.UUID.randomUUID().toString()
 
-fun <T> jsonResponseOf(response: Response, obj: T): String {
-    response.type("application/json")
-    return Gson().toJson(obj)
-}
+fun <T> jsonStringOf(obj: T): String = Gson().toJson(obj)
