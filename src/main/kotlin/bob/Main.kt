@@ -17,8 +17,7 @@
 
 package bob
 
-import bob.util.respond
-import bob.util.respondWithError
+import bob.util.respondWith
 import org.jetbrains.ktor.application.Application
 import org.jetbrains.ktor.application.call
 import org.jetbrains.ktor.application.install
@@ -36,7 +35,7 @@ fun Application.module() {
 
     install(StatusPages) {
         status(HttpStatusCode.NotFound) {
-            respondWithError(
+            respondWith(
                     call,
                     "Sorry, Not found!",
                     HttpStatusCode.NotFound
@@ -46,7 +45,7 @@ fun Application.module() {
 
     install(Routing) {
         get("/status") {
-            respond(call, "Ok")
+            respondWith(call, "Ok")
         }
     }
 }

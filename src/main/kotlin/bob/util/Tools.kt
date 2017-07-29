@@ -29,15 +29,9 @@ fun generateID() = java.util.UUID.randomUUID().toString()
 
 fun <T> jsonStringOf(obj: T): String = Gson().toJson(obj)
 
-suspend fun respond(call: ApplicationCall, message: String) {
-    call.respondText(
-            jsonStringOf(GenericResponse(message)),
-            ContentType.Application.Json
-    )
-}
-
-suspend fun respondWithError(call: ApplicationCall, message: String, errorCode: HttpStatusCode) {
-    call.response.status(errorCode)
+suspend fun respondWith(call: ApplicationCall, message: String,
+                    status: HttpStatusCode = HttpStatusCode.OK) {
+    call.response.status(status)
     call.respondText(
             jsonStringOf(GenericResponse(message)),
             ContentType.Application.Json
