@@ -17,18 +17,16 @@
 
 package bob
 
-import bob.core.GenericResponse
-import bob.util.jsonStringOf
+import bob.util.respond
+import bob.util.respondWithError
 import org.jetbrains.ktor.application.Application
 import org.jetbrains.ktor.application.call
 import org.jetbrains.ktor.application.install
 import org.jetbrains.ktor.features.StatusPages
 import org.jetbrains.ktor.host.embeddedServer
-import org.jetbrains.ktor.http.ContentType
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.logging.CallLogging
 import org.jetbrains.ktor.netty.Netty
-import org.jetbrains.ktor.response.respondText
 import org.jetbrains.ktor.routing.Routing
 import org.jetbrains.ktor.routing.get
 
@@ -38,20 +36,17 @@ fun Application.module() {
 
     install(StatusPages) {
         status(HttpStatusCode.NotFound) {
-            call.response.status(HttpStatusCode.NotFound)
-            call.respondText(
-                    jsonStringOf(GenericResponse("Sorry, Not found!")),
-                    ContentType.Application.Json
+            respondWithError(
+                    call,
+                    "Sorry, Not found!",
+                    HttpStatusCode.NotFound
             )
         }
     }
 
     install(Routing) {
         get("/status") {
-            call.respondText(
-                    jsonStringOf(GenericResponse("Ok")),
-                    ContentType.Application.Json
-            )
+            respond(call, "Ok")
         }
     }
 }

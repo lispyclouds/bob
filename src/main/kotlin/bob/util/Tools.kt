@@ -17,9 +17,29 @@
 
 package bob.util
 
+import bob.core.GenericResponse
 import com.google.gson.Gson
+import org.jetbrains.ktor.application.ApplicationCall
+import org.jetbrains.ktor.http.ContentType
+import org.jetbrains.ktor.http.HttpStatusCode
+import org.jetbrains.ktor.response.respondText
 
 
 fun generateID() = java.util.UUID.randomUUID().toString()
 
 fun <T> jsonStringOf(obj: T): String = Gson().toJson(obj)
+
+suspend fun respond(call: ApplicationCall, message: String) {
+    call.respondText(
+            jsonStringOf(GenericResponse(message)),
+            ContentType.Application.Json
+    )
+}
+
+suspend fun respondWithError(call: ApplicationCall, message: String, errorCode: HttpStatusCode) {
+    call.response.status(errorCode)
+    call.respondText(
+            jsonStringOf(GenericResponse(message)),
+            ContentType.Application.Json
+    )
+}
