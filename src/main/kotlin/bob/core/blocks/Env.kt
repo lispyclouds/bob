@@ -15,7 +15,7 @@
  * along with Bob. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bob.core
+package bob.core.blocks
 
 import kotlinx.collections.immutable.ImmutableMap
 
