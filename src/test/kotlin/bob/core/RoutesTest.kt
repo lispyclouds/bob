@@ -15,7 +15,7 @@
  * along with Bob. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bob
+package bob.core
 
 import org.jetbrains.ktor.application.Application
 import org.jetbrains.ktor.http.HttpMethod
@@ -28,7 +28,8 @@ import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
 
-object MainTest : Spek({
+
+object RoutesTest : Spek({
     given("The Bob API") {
         on("Hitting the endpoints") {
             withTestApplication(Application::module) {

@@ -17,38 +17,11 @@
 
 package bob
 
-import bob.util.respondWith
+import bob.core.module
 import org.jetbrains.ktor.application.Application
-import org.jetbrains.ktor.application.call
-import org.jetbrains.ktor.application.install
-import org.jetbrains.ktor.features.StatusPages
 import org.jetbrains.ktor.host.embeddedServer
-import org.jetbrains.ktor.http.HttpStatusCode
-import org.jetbrains.ktor.logging.CallLogging
 import org.jetbrains.ktor.netty.Netty
-import org.jetbrains.ktor.routing.Routing
-import org.jetbrains.ktor.routing.get
 
-
-fun Application.module() {
-    install(CallLogging)
-
-    install(StatusPages) {
-        status(HttpStatusCode.NotFound) {
-            respondWith(
-                    call,
-                    "Sorry, Not found!",
-                    HttpStatusCode.NotFound
-            )
-        }
-    }
-
-    install(Routing) {
-        get("/status") {
-            respondWith(call, "Ok")
-        }
-    }
-}
 
 fun main(args: Array<String>) {
     embeddedServer(
