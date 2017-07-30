@@ -17,6 +17,7 @@
 
 package bob
 
+import bob.core.initStorage
 import bob.core.module
 import org.jetbrains.ktor.application.Application
 import org.jetbrains.ktor.host.embeddedServer
@@ -24,6 +25,8 @@ import org.jetbrains.ktor.netty.Netty
 
 
 fun main(args: Array<String>) {
+    initStorage()
+
     embeddedServer(
             Netty,
             port = 7777,
