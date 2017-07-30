@@ -20,8 +20,14 @@ package bob.core.blocks
 import kotlinx.collections.immutable.ImmutableMap
 
 
-data class Env(val envVars: ImmutableMap<String, String>)
+data class Env(val id: String, val envVars: ImmutableMap<String, String>)
 
-fun addEnvVarIn(env: Env, key: String, value: String) = Env(env.envVars.put(key, value))
+fun addEnvVarIn(env: Env, key: String, value: String) = Env(
+        env.id,
+        env.envVars.put(key, value)
+)
 
-fun removeEnvVarFrom(env: Env, key: String) = Env(env.envVars.remove(key))
+fun removeEnvVarFrom(env: Env, key: String) = Env(
+        env.id,
+        env.envVars.remove(key)
+)

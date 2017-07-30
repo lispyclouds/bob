@@ -17,6 +17,7 @@
 
 package bob.core.blocks
 
+import bob.util.generateID
 import kotlinx.collections.immutable.immutableMapOf
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.given
@@ -30,7 +31,7 @@ object EnvTest : Spek({
     given("A Bob Env") {
         on("adding an environment variable") {
             val vars = immutableMapOf(Pair("k1", "v1"))
-            val env = Env(vars)
+            val env = Env(generateID(), vars)
             val newEnv = addEnvVarIn(env, key = "k2", value = "v2")
 
             it("should give a new Env with the added variable") {
@@ -40,7 +41,7 @@ object EnvTest : Spek({
 
         on("removing an environment variable") {
             val vars = immutableMapOf(Pair("k1", "v1"))
-            val env = Env(vars)
+            val env = Env(generateID(), vars)
             val newEnv = removeEnvVarFrom(env, "k1")
 
             it("should give a new Env without the variable") {
