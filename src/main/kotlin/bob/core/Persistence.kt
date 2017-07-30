@@ -17,45 +17,32 @@
 
 package bob.core
 
-import java.io.File
-import java.sql.Connection
-import java.sql.DriverManager
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils.createMissingTablesAndColumns
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.transactions.transaction
 
 
-private fun obtainConnection(): Connection {
-    Class.forName("org.sqlite.JDBC")
-    return DriverManager.getConnection(
-            "jdbc:sqlite:${System.getProperty("user.home")}${File.separator}.bob.db"
-    )
+object Envs : Table() {
+    val id = varchar("id", 36)
+            .primaryKey()
 }
 
-private fun initEnvStorage(conn: Connection) {
-    val stmt = conn.createStatement()
-    val envSQL = """
-        CREATE TABLE IF NOT EXISTS envs (
-            id TEXT PRIMARY KEY
-        );
-    """
-    val varSQL = """
-        CREATE TABLE IF NOT EXISTS vars (
-            id    TEXT NOT NULL,
-            key   TEXT NOT NULL,
-            value TEXT NOT NULL,
+object EnvVars : Table() {
+    val id = (varchar("id", 36) references Envs.id)
+            .primaryKey()
+    val key = varchar("key", 30)
+    val value = varchar("value", 50)
+}
 
-            FOREIGN KEY(id) REFERENCES envs(id)
-        );
-    """
-
-    stmt.execute(envSQL)
-    stmt.execute(varSQL)
-
-    stmt.close()
+private fun initEnvStorage() {
+    transaction {
+        createMissingTablesAndColumns(Envs, EnvVars)
+    }
 }
 
 fun initStorage() {
-    val conn = obtainConnection()
+    Database.connect("jdbc:h2:~/.bob", driver = "org.h2.Driver")
 
-    initEnvStorage(conn)
-
-    conn.close()
+    initEnvStorage()
 }

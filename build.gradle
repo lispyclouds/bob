@@ -52,6 +52,7 @@ repositories {
     maven { url "http://dl.bintray.com/kotlin/ktor" }
     maven { url "http://dl.bintray.com/kotlin/kotlinx" }
     maven { url "http://dl.bintray.com/jetbrains/spek" }
+    maven { url "http://dl.bintray.com/kotlin/exposed" }
 }
 
 dependencies {
@@ -65,7 +66,9 @@ dependencies {
 
     compile "ch.qos.logback:logback-classic:1.2.3"
 
-    compile "org.xerial:sqlite-jdbc:3.19.3"
+    compile "org.jetbrains.exposed:exposed:0.8.4"
+
+    compile "com.h2database:h2:1.4.196"
 
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
