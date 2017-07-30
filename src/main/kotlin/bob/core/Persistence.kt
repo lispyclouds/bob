@@ -21,14 +21,15 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils.createMissingTablesAndColumns
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.io.File
 
 
-object Envs : Table() {
+private object Envs : Table() {
     val id = varchar("id", 36)
             .primaryKey()
 }
 
-object EnvVars : Table() {
+private object EnvVars : Table() {
     val id = (varchar("id", 36) references Envs.id)
             .primaryKey()
     val key = varchar("key", 30)
@@ -42,7 +43,10 @@ private fun initEnvStorage() {
 }
 
 fun initStorage() {
-    Database.connect("jdbc:h2:~/.bob", driver = "org.h2.Driver")
+    Database.connect(
+            "jdbc:h2:${System.getProperty("user.home")}${File.separator}.bob",
+            driver = "org.h2.Driver"
+    )
 
     initEnvStorage()
 }
