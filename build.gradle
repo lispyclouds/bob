@@ -63,7 +63,7 @@ dependencies {
 
     compile "com.google.code.gson:gson:2.8.1"
 
-    compile "ch.qos.logback:logback-classic:1.2.1"
+    compile "ch.qos.logback:logback-classic:1.2.3"
 
     compile "org.xerial:sqlite-jdbc:3.19.3"
 
