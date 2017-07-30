@@ -21,7 +21,6 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils.createMissingTablesAndColumns
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.io.File
 
 
 private object Envs : Table() {
@@ -42,11 +41,8 @@ private fun initEnvStorage() {
     }
 }
 
-fun initStorage() {
-    Database.connect(
-            "jdbc:h2:${System.getProperty("user.home")}${File.separator}.bob",
-            driver = "org.h2.Driver"
-    )
+fun initStorage(url: String, driver: String) {
+    Database.connect(url, driver)
 
     initEnvStorage()
 }

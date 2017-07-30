@@ -22,10 +22,14 @@ import bob.core.module
 import org.jetbrains.ktor.application.Application
 import org.jetbrains.ktor.host.embeddedServer
 import org.jetbrains.ktor.netty.Netty
+import java.io.File
 
 
 fun main(args: Array<String>) {
-    initStorage()
+    initStorage(
+            "jdbc:h2:${System.getProperty("user.home")}${File.separator}.bob",
+            driver = "org.h2.Driver"
+    )
 
     embeddedServer(
             Netty,
