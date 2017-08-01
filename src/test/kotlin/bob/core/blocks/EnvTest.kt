@@ -32,20 +32,20 @@ object EnvTest : Spek({
         on("adding an environment variable") {
             val vars = immutableMapOf(Pair("k1", "v1"))
             val env = Env(generateID(), vars)
-            val newEnv = addEnvVarIn(env, key = "k2", value = "v2")
+            val newEnv = addVarIn(env, key = "k2", value = "v2")
 
             it("should give a new Env with the added variable") {
-                assertEquals(newEnv.envVars["k2"], "v2")
+                assertEquals(newEnv.vars["k2"], "v2")
             }
         }
 
         on("removing an environment variable") {
             val vars = immutableMapOf(Pair("k1", "v1"))
             val env = Env(generateID(), vars)
-            val newEnv = removeEnvVarFrom(env, "k1")
+            val newEnv = removeVarFrom(env, "k1")
 
             it("should give a new Env without the variable") {
-                assertNull(newEnv.envVars["k1"])
+                assertNull(newEnv.vars["k1"])
             }
         }
     }

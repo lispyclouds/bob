@@ -24,15 +24,17 @@ import com.google.gson.JsonSyntaxException
 import kotlinx.collections.immutable.toImmutableMap
 
 
-private data class RawEnv(val id: String, val envVars: Map<String, String>)
+private data class RawEnv(
+        val id: String,
+        val variables: Map<String, String>
+)
 
-// TODO: Use GSON for better field names for Env
 fun envToJson(env: Env) = jsonStringOf(env)
 
 fun jsonToEnv(json: String) = try {
     val e = Gson().fromJson(json, RawEnv::class.java)
 
-    if (e != null) Env(e.id, e.envVars.toImmutableMap()) else null
+    if (e != null) Env(e.id, e.variables.toImmutableMap()) else null
 } catch (_: JsonSyntaxException) {
     null
 }

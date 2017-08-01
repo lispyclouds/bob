@@ -56,7 +56,7 @@ fun putEnv(env: Env) = transaction {
 
     Envs.insert { it[id] = env.id }
 
-    env.envVars.forEach { envVar ->
+    env.vars.forEach { envVar ->
         EnvVars.insert {
             it[id] = env.id
             it[key] = envVar.key

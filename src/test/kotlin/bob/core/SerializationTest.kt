@@ -36,14 +36,14 @@ object SerializationTest : Spek({
             it("should give a JSON String of it") {
                 assertEquals(
                         envToJson(env),
-                        "{\"id\":\"id1\",\"envVars\":{\"k1\":\"v1\"}}"
+                        "{\"id\":\"id1\",\"variables\":{\"k1\":\"v1\"}}"
                 )
             }
         }
 
         on("converting a JSON to Env") {
             val env = Env("id1", immutableMapOf("k1" to "v1"))
-            val envJ = "{\"id\":\"id1\",\"envVars\":{\"k1\":\"v1\"}}"
+            val envJ = "{\"id\":\"id1\",\"variables\":{\"k1\":\"v1\"}}"
 
             it("should give a Env object of it") {
                 assertEquals(jsonToEnv(envJ), env)
@@ -51,7 +51,7 @@ object SerializationTest : Spek({
         }
 
         on("converting a invalid JSON to Env") {
-            val envJ = "{\"id\":\"id1\",\"envVars\":{\"k1\":}}"
+            val envJ = "{\"id\":\"id1\",\"variables\":{\"k1\":}}"
 
             it("should give null") {
                 assertNull(jsonToEnv(envJ))
