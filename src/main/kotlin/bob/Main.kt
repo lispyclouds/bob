@@ -27,7 +27,8 @@ import java.io.File
 
 fun main(args: Array<String>) {
     initStorage(
-            url = "jdbc:h2:${System.getProperty("user.home")}${File.separator}.bob",
+            url = "jdbc:h2:${System.getProperty("user.home")}" +
+                    "${File.separator}.bob",
             driver = "org.h2.Driver"
     )
 

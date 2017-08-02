@@ -20,6 +20,7 @@ package bob.core
 import bob.core.blocks.Env
 import kotlinx.collections.immutable.toImmutableMap
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.ReferenceOption.CASCADE
 import org.jetbrains.exposed.sql.SchemaUtils.createMissingTablesAndColumns
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.deleteWhere
@@ -33,7 +34,9 @@ private object Envs : Table() {
 }
 
 private object EnvVars : Table() {
-    val id = varchar("id", 36) references Envs.id
+    val id = varchar("id", 36).references(
+            Envs.id, onDelete = CASCADE
+    )
     val key = varchar("key", 30)
     val value = varchar("value", 50)
 }
@@ -78,6 +81,5 @@ fun getEnv(id: String) = transaction {
 }
 
 fun delEnv(id: String) = transaction {
-    EnvVars.deleteWhere { EnvVars.id eq id }
     Envs.deleteWhere { Envs.id eq id }
 }
