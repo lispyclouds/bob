@@ -23,12 +23,10 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.ReferenceOption.CASCADE
 import org.jetbrains.exposed.sql.SchemaUtils.createMissingTablesAndColumns
 import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
 
 
 private object Envs : Table() {
@@ -56,23 +54,16 @@ fun initStorage(url: String, driver: String) {
 }
 
 fun putEnv(env: Env) = transaction {
-    if (Envs.select { Envs.id eq env.id }.empty()) {
-        Envs.insert { it[id] = env.id }
+    // TODO: Optimize
+    delEnv(env.id)
 
-        env.vars.forEach { envVar ->
-            EnvVars.insert {
-                it[id] = env.id
-                it[key] = envVar.key
-                it[value] = envVar.value
-            }
-        }
-    } else {
-        env.vars.forEach { envVar ->
-            EnvVars.update({
-                EnvVars.id.eq(env.id) and EnvVars.key.eq(envVar.key)
-            }) {
-                it[value] = envVar.value
-            }
+    Envs.insert { it[id] = env.id }
+
+    env.vars.forEach { envVar ->
+        EnvVars.insert {
+            it[id] = env.id
+            it[key] = envVar.key
+            it[value] = envVar.value
         }
     }
 }

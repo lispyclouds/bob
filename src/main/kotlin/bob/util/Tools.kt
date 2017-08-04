@@ -18,6 +18,7 @@
 package bob.util
 
 import bob.core.GenericResponse
+import bob.core.asJsonString
 import com.google.gson.Gson
 import org.jetbrains.ktor.application.ApplicationCall
 import org.jetbrains.ktor.http.ContentType
@@ -33,7 +34,48 @@ suspend fun respondWith(call: ApplicationCall, message: String,
                         status: HttpStatusCode = HttpStatusCode.OK) {
     call.response.status(status)
     call.respondText(
-            jsonStringOf(GenericResponse(message)),
+            GenericResponse(message).asJsonString(),
             ContentType.Application.Json
     )
+}
+
+suspend fun respondWith404(call: ApplicationCall) {
+    call.response.status(HttpStatusCode.NotFound)
+    call.respondText(
+            GenericResponse("Sorry, Not found!").asJsonString(),
+            ContentType.Application.Json
+    )
+}
+
+suspend fun respondWithError(call: ApplicationCall) {
+    call.response.status(HttpStatusCode.InternalServerError)
+    call.respondText(
+            GenericResponse("Internal Error happened!").asJsonString(),
+            ContentType.Application.Json
+    )
+}
+
+suspend fun <T> respondIfExists(call: ApplicationCall, obj: T?,
+                                serializeUsing: (T) -> String) {
+    if (obj != null) {
+        call.response.status(HttpStatusCode.OK)
+        call.respondText(
+                serializeUsing(obj),
+                ContentType.Application.Json
+        )
+    } else {
+        respondWith404(call)
+    }
+}
+
+suspend fun <T> putIfCorrect(call: ApplicationCall, requestJson: String,
+                             deserializeUsing: (String) -> T?,
+                             putUsing: (T) -> Unit) {
+    val entity = deserializeUsing(requestJson)
+
+    if (entity != null) {
+        putUsing(entity)
+    } else {
+        respondWithError(call)
+    }
 }

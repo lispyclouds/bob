@@ -33,9 +33,7 @@ buildscript {
         mavenCentral()
         jcenter()
 
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
+        maven { url "https://plugins.gradle.org/m2/" }
     }
 
     dependencies {
@@ -66,7 +64,7 @@ dependencies {
 
     compile "ch.qos.logback:logback-classic:1.2.3"
 
-    compile "org.jetbrains.exposed:exposed:0.8.4"
+    compile "org.jetbrains.exposed:exposed:0.8.5"
 
     compile "com.h2database:h2:1.4.196"
 
@@ -82,7 +80,7 @@ dependencies {
 junitPlatform {
     filters {
         engines {
-            include 'spek'
+            include "spek"
         }
     }
 }

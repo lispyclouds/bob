@@ -17,15 +17,23 @@
 
 package bob.core
 
+import bob.util.putIfCorrect
+import bob.util.respondIfExists
 import bob.util.respondWith
+import bob.util.respondWith404
+import bob.util.respondWithError
 import org.jetbrains.ktor.application.Application
 import org.jetbrains.ktor.application.call
 import org.jetbrains.ktor.application.install
+import org.jetbrains.ktor.application.receive
 import org.jetbrains.ktor.features.StatusPages
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.logging.CallLogging
 import org.jetbrains.ktor.routing.Routing
+import org.jetbrains.ktor.routing.delete
 import org.jetbrains.ktor.routing.get
+import org.jetbrains.ktor.routing.put
+import org.jetbrains.ktor.routing.route
 
 
 fun Application.module() {
@@ -33,17 +41,59 @@ fun Application.module() {
 
     install(StatusPages) {
         status(HttpStatusCode.NotFound) {
-            respondWith(
-                    call,
-                    "Sorry, Not found!",
-                    HttpStatusCode.NotFound
-            )
+            respondWith404(call)
+        }
+
+        status(HttpStatusCode.InternalServerError) {
+            respondWithError(call)
         }
     }
 
     install(Routing) {
         get("/status") {
             respondWith(call, "Ok")
+        }
+
+        route("/env") {
+            route("/{id}") {
+                get {
+                    val id = call.parameters["id"]
+
+                    if (id != null) {
+                        respondIfExists(call, getEnv(id), ::envToJson)
+                    } else {
+                        respondWith404(call)
+                    }
+                }
+
+                put {
+                    val id = call.parameters["id"]
+                    val rawVars = call.request.receive<String>()
+
+                    if (!rawVars.isEmpty()) {
+                        val envJson = """{
+                            "id": "$id",
+                            "variables": $rawVars
+                        }"""
+
+                        putIfCorrect(call, envJson, ::jsonToEnv, ::putEnv)
+                        respondWith(call, "Ok")
+                    } else {
+                        respondWith404(call)
+                    }
+                }
+
+                delete {
+                    val id = call.parameters["id"]
+
+                    if (id != null) {
+                        delEnv(id)
+                        respondWith(call, "Ok")
+                    } else {
+                        respondWith404(call)
+                    }
+                }
+            }
         }
     }
 }
