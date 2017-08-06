@@ -18,14 +18,19 @@
 package bob.core
 
 import bob.core.blocks.Env
+import bob.core.blocks.RunWhen
+import bob.core.blocks.Task
+import bob.core.blocks.TaskType
 import kotlinx.collections.immutable.immutableMapOf
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.given
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import java.io.File
+import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.test.fail
 
 
 object PersistenceTest : Spek({
@@ -51,6 +56,44 @@ object PersistenceTest : Spek({
 
             it("should return null on fetch") {
                 assertNull(getEnv("id1"))
+            }
+        }
+
+        on("saving a Task") {
+            putTask(Task(
+                    "id1",
+                    TaskType.FETCH,
+                    "ls",
+                    RunWhen.PASSED
+            ))
+
+            it("should save to DB") {
+                val task = getTask("id1")
+
+                assertNotNull(task)
+
+                if (task != null) {
+                    assertEquals("id1", task.id)
+                    assertEquals(TaskType.FETCH, task.type)
+                    assertEquals("ls", task.command)
+                    assertEquals(RunWhen.PASSED, task.runWhen)
+                } else {
+                    fail("Task save test failed.")
+                }
+            }
+        }
+
+        on("deleting a Task") {
+            putTask(Task(
+                    "id1",
+                    TaskType.FETCH,
+                    "ls",
+                    RunWhen.PASSED
+            ))
+            delTask("id1")
+
+            it("should return null on fetch") {
+                assertNull(getTask("id1"))
             }
         }
 

@@ -18,6 +18,9 @@
 package bob.core
 
 import bob.core.blocks.Env
+import bob.core.blocks.RunWhen
+import bob.core.blocks.Task
+import bob.core.blocks.TaskType
 import kotlinx.collections.immutable.toImmutableMap
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.ReferenceOption.CASCADE
@@ -27,6 +30,7 @@ import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 
 
 private object Envs : Table() {
@@ -41,16 +45,23 @@ private object EnvVars : Table() {
     val value = varchar("value", 50)
 }
 
-private fun initEnvStorage() {
-    transaction {
-        createMissingTablesAndColumns(Envs, EnvVars)
-    }
+private object Tasks : Table() {
+    val id = varchar("id", 36).primaryKey()
+    val type = varchar("type", 5)
+    val command = varchar("command", 500)
+    val runWhen = varchar("runWhen", 6)
 }
 
 fun initStorage(url: String, driver: String) {
     Database.connect(url, driver)
 
-    initEnvStorage()
+    transaction {
+        createMissingTablesAndColumns(
+                Envs,
+                EnvVars,
+                Tasks
+        )
+    }
 }
 
 fun putEnv(env: Env) = transaction {
@@ -82,4 +93,38 @@ fun getEnv(id: String) = transaction {
 
 fun delEnv(id: String) = transaction {
     Envs.deleteWhere { Envs.id eq id }
+}
+
+fun putTask(task: Task): Unit = transaction {
+    if (Tasks.select { Tasks.id eq task.id }.empty()) {
+        Tasks.insert {
+            it[id] = task.id
+            it[type] = task.type.name
+            it[command] = task.command
+            it[runWhen] = task.runWhen.name
+        }
+    } else {
+        Tasks.update({ Tasks.id eq task.id }) {
+            it[type] = task.type.name
+            it[command] = task.command
+            it[runWhen] = task.runWhen.name
+        }
+    }
+}
+
+fun getTask(id: String) = transaction {
+    val result = Tasks.select { Tasks.id eq id }
+
+    if (result.empty()) {
+        null
+    } else {
+        val type = TaskType.valueOf(result.first()[Tasks.type])
+        val runWhen = RunWhen.valueOf(result.first()[Tasks.runWhen])
+
+        Task(id, type, result.first()[Tasks.command], runWhen)
+    }
+}
+
+fun delTask(id: String) = transaction {
+    Tasks.deleteWhere { Tasks.id eq id }
 }
