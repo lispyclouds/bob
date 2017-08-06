@@ -18,6 +18,7 @@
 package bob.core
 
 import bob.core.blocks.Env
+import bob.core.blocks.Task
 import bob.util.jsonStringOf
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
@@ -35,6 +36,20 @@ fun jsonToEnv(json: String) = try {
     val e = Gson().fromJson(json, RawEnv::class.java)
 
     if (e != null) Env(e.id, e.variables.toImmutableMap()) else null
+} catch (_: JsonSyntaxException) {
+    null
+}
+
+fun Task.toJson() = jsonStringOf(this)
+
+fun jsonToTask(json: String) = try {
+    val t = Gson().fromJson(json, Task::class.java)
+
+    if (t != null) {
+        Task(t.id, t.type, t.command, t.runWhen)
+    } else {
+        null
+    }
 } catch (_: JsonSyntaxException) {
     null
 }

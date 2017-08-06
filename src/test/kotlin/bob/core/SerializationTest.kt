@@ -18,6 +18,9 @@
 package bob.core
 
 import bob.core.blocks.Env
+import bob.core.blocks.RunWhen
+import bob.core.blocks.Task
+import bob.core.blocks.TaskType
 import kotlinx.collections.immutable.immutableMapOf
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.given
@@ -55,6 +58,38 @@ object SerializationTest : Spek({
 
             it("should give null") {
                 assertNull(jsonToEnv(envJ))
+            }
+        }
+
+        on("converting a Task to JSON") {
+            val task = Task("id1", TaskType.FETCH, "ls", RunWhen.PASSED)
+
+            it("should give a JSON String of it") {
+                assertEquals(
+                        "{\"id\":\"id1\",\"type\":\"fetch\"," +
+                                "\"command\":\"ls\",\"runWhen\":\"passed\"}",
+                        task.toJson()
+                )
+            }
+        }
+
+        on("converting a JSON to Task") {
+            val task = Task("id1", TaskType.FETCH, "ls", RunWhen.PASSED)
+            val taskJ = "{\"id\":\"id1\",\"type\":\"fetch\"," +
+                    "\"command\":\"ls\",\"runWhen\":\"passed\"}"
+
+            it("should give a Env object of it") {
+                assertEquals(jsonToTask(taskJ), task)
+            }
+        }
+
+        on("converting a invalid JSON to Task") {
+            val taskJ = "{\"id\":\"id1\",\"type\":\"fetch\"," +
+                    "\"command\":\"ls\"," +
+                    "\"runWhen\":}"
+
+            it("should give null") {
+                assertNull(jsonToTask(taskJ))
             }
         }
     }
