@@ -17,6 +17,7 @@
 
 package bob.core
 
+import bob.core.blocks.Env
 import bob.util.putIfCorrect
 import bob.util.respondIfExists
 import bob.util.respondWith
@@ -60,7 +61,7 @@ fun Application.module() {
                     val id = call.parameters["id"]
 
                     if (id != null) {
-                        respondIfExists(call, getEnv(id), ::envToJson)
+                        respondIfExists(call, getEnv(id), Env::toJson)
                     } else {
                         respondWith404(call)
                     }

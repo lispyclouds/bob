@@ -29,7 +29,7 @@ private data class RawEnv(
         val variables: Map<String, String>
 )
 
-fun envToJson(env: Env) = jsonStringOf(env)
+fun Env.toJson() = jsonStringOf(this)
 
 fun jsonToEnv(json: String) = try {
     val e = Gson().fromJson(json, RawEnv::class.java)

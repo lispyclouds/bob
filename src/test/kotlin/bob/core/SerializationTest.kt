@@ -35,8 +35,8 @@ object SerializationTest : Spek({
 
             it("should give a JSON String of it") {
                 assertEquals(
-                        envToJson(env),
-                        "{\"id\":\"id1\",\"variables\":{\"k1\":\"v1\"}}"
+                        "{\"id\":\"id1\",\"variables\":{\"k1\":\"v1\"}}",
+                        env.toJson()
                 )
             }
         }
