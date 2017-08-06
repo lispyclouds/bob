@@ -32,7 +32,7 @@ enum class RunWhen {
 }
 
 data class Task(
-        val id: String,
+        val id: String?, // TODO: Find a better way to serialize
         val type: TaskType,
         val command: String,
         val runWhen: RunWhen

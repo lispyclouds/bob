@@ -18,6 +18,7 @@
 package bob.core
 
 import bob.core.blocks.Env
+import bob.core.blocks.Task
 import bob.util.putIfCorrect
 import bob.util.respondIfExists
 import bob.util.respondWith
@@ -80,7 +81,11 @@ fun Application.module() {
                         putIfCorrect(call, envJson, ::jsonToEnv, ::putEnv)
                         respondWith(call, "Ok")
                     } else {
-                        respondWith404(call)
+                        respondWith(
+                                call,
+                                "Invalid Env provided",
+                                HttpStatusCode.BadRequest
+                        )
                     }
                 }
 
@@ -89,6 +94,64 @@ fun Application.module() {
 
                     if (id != null) {
                         delEnv(id)
+                        respondWith(call, "Ok")
+                    } else {
+                        respondWith404(call)
+                    }
+                }
+            }
+        }
+
+        route("/task") {
+            route("/{id}") {
+                get {
+                    val id = call.parameters["id"]
+
+                    if (id != null) {
+                        respondIfExists(call, getTask(id), Task::toJson)
+                    } else {
+                        respondWith404(call)
+                    }
+                }
+
+                put {
+                    val id = call.parameters["id"]
+                    val taskOptions = call.request.receive<String>()
+
+                    if (!taskOptions.isEmpty()) {
+                        val options = jsonToTask(taskOptions)
+
+                        if (id != null && options != null) {
+                            val task = Task(
+                                    id,
+                                    options.type,
+                                    options.command,
+                                    options.runWhen
+                            )
+
+                            putTask(task)
+                            respondWith(call, "Ok")
+                        } else {
+                            respondWith(
+                                    call,
+                                    "Invalid Task options provided",
+                                    HttpStatusCode.BadRequest
+                            )
+                        }
+                    } else {
+                        respondWith(
+                                call,
+                                "Invalid Task provided",
+                                HttpStatusCode.BadRequest
+                        )
+                    }
+                }
+
+                delete {
+                    val id = call.parameters["id"]
+
+                    if (id != null) {
+                        delTask(id)
                         respondWith(call, "Ok")
                     } else {
                         respondWith404(call)
