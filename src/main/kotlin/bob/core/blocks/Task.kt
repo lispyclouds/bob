@@ -32,8 +32,10 @@ enum class RunWhen {
 }
 
 data class Task(
-        val id: String?, // TODO: Find a better way to serialize
+        // TODO: Find a better way to serialize
+        val id: String?,
         val type: TaskType,
         val command: String,
-        val runWhen: RunWhen
+        val runWhen: RunWhen,
+        val workingDirectory: String? = "."
 )

@@ -126,7 +126,8 @@ fun Application.module() {
                                     id,
                                     options.type,
                                     options.command,
-                                    options.runWhen
+                                    options.runWhen,
+                                    options.workingDirectory
                             )
 
                             putTask(task)

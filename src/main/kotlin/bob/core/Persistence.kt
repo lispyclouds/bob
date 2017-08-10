@@ -50,6 +50,7 @@ private object Tasks : Table() {
     val type = varchar("type", 5)
     val command = varchar("command", 500)
     val runWhen = varchar("runWhen", 6)
+    val workingDirectory = varchar("workingDirectory", 100)
 }
 
 fun initStorage(url: String, driver: String) {
@@ -102,12 +103,14 @@ fun putTask(task: Task): Unit = transaction {
             it[type] = task.type.name
             it[command] = task.command
             it[runWhen] = task.runWhen.name
+            it[workingDirectory] = task.workingDirectory
         }
     } else {
         Tasks.update({ Tasks.id eq task.id }) {
             it[type] = task.type.name
             it[command] = task.command
             it[runWhen] = task.runWhen.name
+            it[workingDirectory] = task.workingDirectory
         }
     }
 }
@@ -121,7 +124,13 @@ fun getTask(id: String) = transaction {
         val type = TaskType.valueOf(result.first()[Tasks.type])
         val runWhen = RunWhen.valueOf(result.first()[Tasks.runWhen])
 
-        Task(id, type, result.first()[Tasks.command], runWhen)
+        Task(
+                id,
+                type,
+                result.first()[Tasks.command],
+                runWhen,
+                result.first()[Tasks.workingDirectory]
+        )
     }
 }
 

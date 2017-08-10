@@ -64,7 +64,8 @@ object PersistenceTest : Spek({
                     "id1",
                     TaskType.FETCH,
                     "ls",
-                    RunWhen.PASSED
+                    RunWhen.PASSED,
+                    "/tmp"
             ))
 
             it("should save to DB") {
@@ -77,6 +78,7 @@ object PersistenceTest : Spek({
                     assertEquals(TaskType.FETCH, task.type)
                     assertEquals("ls", task.command)
                     assertEquals(RunWhen.PASSED, task.runWhen)
+                    assertEquals("/tmp", task.workingDirectory)
                 } else {
                     fail("Task save test failed.")
                 }

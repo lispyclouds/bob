@@ -67,7 +67,8 @@ object SerializationTest : Spek({
             it("should give a JSON String of it") {
                 assertEquals(
                         "{\"id\":\"id1\",\"type\":\"fetch\"," +
-                                "\"command\":\"ls\",\"runWhen\":\"passed\"}",
+                                "\"command\":\"ls\",\"runWhen\":\"passed\"," +
+                                "\"workingDirectory\":\".\"}",
                         task.toJson()
                 )
             }
@@ -78,7 +79,7 @@ object SerializationTest : Spek({
             val taskJ = "{\"id\":\"id1\",\"type\":\"fetch\"," +
                     "\"command\":\"ls\",\"runWhen\":\"passed\"}"
 
-            it("should give a Env object of it") {
+            it("should give a Task object of it") {
                 assertEquals(jsonToTask(taskJ), task)
             }
         }
