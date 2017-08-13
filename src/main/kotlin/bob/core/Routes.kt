@@ -37,7 +37,6 @@ import org.jetbrains.ktor.routing.get
 import org.jetbrains.ktor.routing.put
 import org.jetbrains.ktor.routing.route
 
-
 fun Application.module() {
     install(CallLogging)
 

@@ -32,7 +32,6 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.fail
 
-
 object PersistenceTest : Spek({
     given("Bob Storage") {
         val db = File.createTempFile("bob", ".db")

@@ -26,7 +26,6 @@ import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
-
 object EnvTest : Spek({
     given("A Bob Env") {
         on("adding an environment variable") {

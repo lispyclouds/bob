@@ -19,7 +19,6 @@ package bob.core
 
 import bob.util.jsonStringOf
 
-
 data class GenericResponse(val message: String)
 
 fun GenericResponse.asJsonString() = jsonStringOf(this)

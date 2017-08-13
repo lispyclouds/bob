@@ -24,7 +24,6 @@ import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import kotlinx.collections.immutable.toImmutableMap
 
-
 private data class RawEnv(
         val id: String,
         val variables: Map<String, String>

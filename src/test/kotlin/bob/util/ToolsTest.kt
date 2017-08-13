@@ -25,7 +25,6 @@ import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
-
 object ToolsTest : Spek({
     given("Bob Tools") {
         on("generating two IDs") {

@@ -20,7 +20,6 @@ package bob.core.blocks
 import com.google.gson.annotations.SerializedName
 import kotlinx.collections.immutable.ImmutableMap
 
-
 data class Env(
         val id: String,
 

@@ -19,7 +19,6 @@ package bob.core.blocks
 
 import com.google.gson.annotations.SerializedName
 
-
 enum class TaskType {
     @SerializedName("fetch") FETCH,
     @SerializedName("shell") SHELL

@@ -29,7 +29,6 @@ import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
-
 object SerializationTest : Spek({
     given("Bob Serialization") {
 

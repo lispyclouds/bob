@@ -32,7 +32,6 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 
-
 private object Envs : Table() {
     val id = varchar("id", 36).primaryKey()
 }

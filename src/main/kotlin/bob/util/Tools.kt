@@ -25,7 +25,6 @@ import org.jetbrains.ktor.http.ContentType
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.response.respondText
 
-
 fun generateID() = java.util.UUID.randomUUID().toString()
 
 fun <T> jsonStringOf(obj: T): String = Gson().toJson(obj)

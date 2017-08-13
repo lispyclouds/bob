@@ -28,7 +28,6 @@ import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
 
-
 object RoutesTest : Spek({
     given("The Bob API") {
         on("Hitting the endpoints") {

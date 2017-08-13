@@ -24,7 +24,6 @@ import org.jetbrains.ktor.host.embeddedServer
 import org.jetbrains.ktor.netty.Netty
 import java.io.File
 
-
 fun main(args: Array<String>) {
     initStorage(
             url = "jdbc:h2:${System.getProperty("user.home")}" +
