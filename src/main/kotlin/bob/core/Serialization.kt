@@ -45,10 +45,15 @@ fun Task.toJson() = jsonStringOf(this)
 fun jsonToTask(json: String) = try {
     val t = Gson().fromJson(json, Task::class.java)
 
-    if (t != null) {
-        Task(t.id, t.type, t.command, t.runWhen, t.workingDirectory ?: ".")
-    } else {
-        null
+    when (t) {
+        null -> t
+        else -> Task(
+                t.id,
+                t.type,
+                t.command,
+                t.runWhen,
+                t.workingDirectory ?: "."
+        )
     }
 } catch (_: JsonSyntaxException) {
     null

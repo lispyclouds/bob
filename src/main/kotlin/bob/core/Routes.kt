@@ -61,10 +61,9 @@ fun Application.module() {
                 get {
                     val id = call.parameters["id"]
 
-                    if (id != null) {
-                        respondIfExists(call, getEnv(id), Env::toJson)
-                    } else {
-                        respondWith404(call)
+                    when (id) {
+                        null -> respondWith404(call)
+                        else -> respondIfExists(call, getEnv(id), Env::toJson)
                     }
                 }
 
@@ -72,31 +71,35 @@ fun Application.module() {
                     val id = call.parameters["id"]
                     val rawVars = call.request.receive<String>()
 
-                    if (!rawVars.isEmpty()) {
-                        val envJson = """{
-                            "id": "$id",
-                            "variables": $rawVars
-                        }"""
+                    when {
+                        rawVars.isEmpty() -> {
+                            respondWith(
+                                    call,
+                                    "Invalid Env provided",
+                                    HttpStatusCode.BadRequest
+                            )
+                        }
+                        else -> {
+                            val envJson = """{
+                                "id": "$id",
+                                "variables": $rawVars
+                            }"""
 
-                        putIfCorrect(call, envJson, ::jsonToEnv, ::putEnv)
-                        respondWith(call, "Ok")
-                    } else {
-                        respondWith(
-                                call,
-                                "Invalid Env provided",
-                                HttpStatusCode.BadRequest
-                        )
+                            putIfCorrect(call, envJson, ::jsonToEnv, ::putEnv)
+                            respondWith(call, "Ok")
+                        }
                     }
                 }
 
                 delete {
                     val id = call.parameters["id"]
 
-                    if (id != null) {
-                        delEnv(id)
-                        respondWith(call, "Ok")
-                    } else {
-                        respondWith404(call)
+                    when (id) {
+                        null -> respondWith404(call)
+                        else -> {
+                            delEnv(id)
+                            respondWith(call, "Ok")
+                        }
                     }
                 }
             }
@@ -107,10 +110,9 @@ fun Application.module() {
                 get {
                     val id = call.parameters["id"]
 
-                    if (id != null) {
-                        respondIfExists(call, getTask(id), Task::toJson)
-                    } else {
-                        respondWith404(call)
+                    when (id) {
+                        null -> respondWith404(call)
+                        else -> respondIfExists(call, getTask(id), Task::toJson)
                     }
                 }
 
@@ -118,44 +120,51 @@ fun Application.module() {
                     val id = call.parameters["id"]
                     val taskOptions = call.request.receive<String>()
 
-                    if (!taskOptions.isEmpty()) {
-                        val options = jsonToTask(taskOptions)
-
-                        if (id != null && options != null) {
-                            val task = Task(
-                                    id,
-                                    options.type,
-                                    options.command,
-                                    options.runWhen,
-                                    options.workingDirectory
-                            )
-
-                            putTask(task)
-                            respondWith(call, "Ok")
-                        } else {
+                    when {
+                        taskOptions.isEmpty() -> {
                             respondWith(
                                     call,
-                                    "Invalid Task options provided",
+                                    "Invalid Task provided",
                                     HttpStatusCode.BadRequest
                             )
                         }
-                    } else {
-                        respondWith(
-                                call,
-                                "Invalid Task provided",
-                                HttpStatusCode.BadRequest
-                        )
+                        else -> {
+                            val options = jsonToTask(taskOptions)
+
+                            when {
+                                id != null && options != null -> {
+                                    val task = Task(
+                                            id,
+                                            options.type,
+                                            options.command,
+                                            options.runWhen,
+                                            options.workingDirectory
+                                    )
+
+                                    putTask(task)
+                                    respondWith(call, "Ok")
+                                }
+                                else -> {
+                                    respondWith(
+                                            call,
+                                            "Invalid Task options provided",
+                                            HttpStatusCode.BadRequest
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
 
                 delete {
                     val id = call.parameters["id"]
 
-                    if (id != null) {
-                        delTask(id)
-                        respondWith(call, "Ok")
-                    } else {
-                        respondWith404(call)
+                    when (id) {
+                        null -> respondWith404(call)
+                        else -> {
+                            delTask(id)
+                            respondWith(call, "Ok")
+                        }
                     }
                 }
             }

@@ -83,12 +83,13 @@ fun putEnv(env: Env) = transaction {
 fun getEnv(id: String) = transaction {
     val results = EnvVars.select { EnvVars.id eq id }
 
-    if (results.empty()) {
-        null
-    } else {
-        Env(id, results.map {
-            Pair(it[EnvVars.key], it[EnvVars.value])
-        }.toMap().toImmutableMap())
+    when {
+        results.empty() -> null
+        else -> {
+            Env(id, results.map {
+                Pair(it[EnvVars.key], it[EnvVars.value])
+            }.toMap().toImmutableMap())
+        }
     }
 }
 
@@ -97,16 +98,15 @@ fun delEnv(id: String) = transaction {
 }
 
 fun putTask(task: Task): Unit = transaction {
-    if (Tasks.select { Tasks.id eq task.id }.empty()) {
-        Tasks.insert {
+    when {
+        Tasks.select { Tasks.id eq task.id }.empty() -> Tasks.insert {
             it[id] = task.id
             it[type] = task.type.name
             it[command] = task.command
             it[runWhen] = task.runWhen.name
             it[workingDirectory] = task.workingDirectory
         }
-    } else {
-        Tasks.update({ Tasks.id eq task.id }) {
+        else -> Tasks.update({ Tasks.id eq task.id }) {
             it[type] = task.type.name
             it[command] = task.command
             it[runWhen] = task.runWhen.name
@@ -118,19 +118,20 @@ fun putTask(task: Task): Unit = transaction {
 fun getTask(id: String) = transaction {
     val result = Tasks.select { Tasks.id eq id }
 
-    if (result.empty()) {
-        null
-    } else {
-        val type = TaskType.valueOf(result.first()[Tasks.type])
-        val runWhen = RunWhen.valueOf(result.first()[Tasks.runWhen])
+    when {
+        result.empty() -> null
+        else -> {
+            val type = TaskType.valueOf(result.first()[Tasks.type])
+            val runWhen = RunWhen.valueOf(result.first()[Tasks.runWhen])
 
-        Task(
-                id,
-                type,
-                result.first()[Tasks.command],
-                runWhen,
-                result.first()[Tasks.workingDirectory]
-        )
+            Task(
+                    id,
+                    type,
+                    result.first()[Tasks.command],
+                    runWhen,
+                    result.first()[Tasks.workingDirectory]
+            )
+        }
     }
 }
 
