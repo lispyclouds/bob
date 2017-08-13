@@ -55,26 +55,25 @@ suspend fun respondWithError(call: ApplicationCall) {
 }
 
 suspend fun <T> respondIfExists(call: ApplicationCall, obj: T?,
-                                serializeUsing: (T) -> String) {
-    if (obj != null) {
-        call.response.status(HttpStatusCode.OK)
-        call.respondText(
-                serializeUsing(obj),
-                ContentType.Application.Json
-        )
-    } else {
-        respondWith404(call)
-    }
-}
+                                serializeUsing: (T) -> String) =
+        when (obj) {
+            null -> respondWith404(call)
+            else -> {
+                call.response.status(HttpStatusCode.OK)
+                call.respondText(
+                        serializeUsing(obj),
+                        ContentType.Application.Json
+                )
+            }
+        }
 
 suspend fun <T> putIfCorrect(call: ApplicationCall, requestJson: String,
                              deserializeUsing: (String) -> T?,
                              putUsing: (T) -> Unit) {
     val entity = deserializeUsing(requestJson)
 
-    if (entity != null) {
-        putUsing(entity)
-    } else {
-        respondWithError(call)
+    when (entity) {
+        null -> respondWithError(call)
+        else -> putUsing(entity)
     }
 }
