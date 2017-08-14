@@ -44,8 +44,10 @@ fun Task.toJson() = jsonStringOf(this)
 fun jsonToTask(json: String) = try {
     val t = Gson().fromJson(json, Task::class.java)
 
-    when (t) {
-        null -> t
+    // TODO: Remove when GSON has @Required
+    @Suppress("SENSELESS_COMPARISON")
+    when {
+        t == null || t.type == null || t.runWhen == null -> null
         else -> Task(
                 t.id,
                 t.type,
