@@ -24,6 +24,7 @@ import bob.core.blocks.Task
 import bob.core.blocks.TaskType
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableMap
+import org.h2.jdbc.JdbcSQLException
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.ReferenceOption.CASCADE
 import org.jetbrains.exposed.sql.ReferenceOption.RESTRICT
@@ -111,23 +112,29 @@ fun delEnv(id: String) = transaction {
     Envs.deleteWhere { Envs.id eq id }
 }
 
-fun putTask(task: Task): Unit = transaction {
-    when {
-        Tasks.select { Tasks.id eq task.id }.empty() -> Tasks.insert {
-            it[id] = task.id
-            it[jobId] = task.jobId
-            it[type] = task.type.name
-            it[command] = task.command
-            it[runWhen] = task.runWhen.name
-            it[workingDirectory] = task.workingDirectory
+fun putTask(task: Task) = transaction {
+    try {
+        when {
+            Tasks.select { Tasks.id eq task.id }.empty() -> Tasks.insert {
+                it[id] = task.id
+                it[jobId] = task.jobId
+                it[type] = task.type.name
+                it[command] = task.command
+                it[runWhen] = task.runWhen.name
+                it[workingDirectory] = task.workingDirectory
+            }
+            else -> Tasks.update({ Tasks.id eq task.id }) {
+                it[jobId] = task.jobId
+                it[type] = task.type.name
+                it[command] = task.command
+                it[runWhen] = task.runWhen.name
+                it[workingDirectory] = task.workingDirectory
+            }
         }
-        else -> Tasks.update({ Tasks.id eq task.id }) {
-            it[jobId] = task.jobId
-            it[type] = task.type.name
-            it[command] = task.command
-            it[runWhen] = task.runWhen.name
-            it[workingDirectory] = task.workingDirectory
-        }
+
+        true
+    } catch (_: JdbcSQLException) {
+        false
     }
 }
 
@@ -169,7 +176,7 @@ fun putJob(job: Job): Unit = transaction {
 
             val associatedTasks = job.tasks.map { it.id }
             Tasks.deleteWhere {
-                Tasks.id eq job.id and (Tasks.jobId notInList associatedTasks)
+                Tasks.jobId eq job.id and (Tasks.id notInList associatedTasks)
             }
         }
     }

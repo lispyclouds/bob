@@ -143,8 +143,14 @@ fun Application.module() {
                                             options.workingDirectory
                                     )
 
-                                    putTask(task)
-                                    respondWith(call, "Ok")
+                                    if (putTask(task))
+                                        respondWith(call, "Ok")
+                                    else
+                                        respondWith(
+                                                call,
+                                                "Invalid Job ID",
+                                                HttpStatusCode.BadRequest
+                                        )
                                 }
                                 else -> {
                                     respondWith(
@@ -212,7 +218,7 @@ fun Application.module() {
                                 else -> {
                                     respondWith(
                                             call,
-                                            "Invalid Job provided",
+                                            "Invalid parameters provided",
                                             HttpStatusCode.BadRequest
                                     )
                                 }
