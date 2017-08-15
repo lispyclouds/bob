@@ -50,6 +50,7 @@ fun jsonToTask(json: String) = try {
         t == null || t.type == null || t.runWhen == null -> null
         else -> Task(
                 t.id,
+                t.jobId,
                 t.type,
                 t.command,
                 t.runWhen,

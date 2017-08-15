@@ -18,12 +18,15 @@
 package bob.core
 
 import bob.core.blocks.Env
+import bob.core.blocks.Job
 import bob.core.blocks.RunWhen
 import bob.core.blocks.Task
 import bob.core.blocks.TaskType
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableMap
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.ReferenceOption.CASCADE
+import org.jetbrains.exposed.sql.ReferenceOption.RESTRICT
 import org.jetbrains.exposed.sql.SchemaUtils.createMissingTablesAndColumns
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.deleteWhere
@@ -44,8 +47,18 @@ private object EnvVars : Table() {
     val value = varchar("value", 50)
 }
 
+private object Jobs : Table() {
+    val id = varchar("id", 36).primaryKey()
+    val envId = varchar("envId", 36).references(
+            Envs.id, onDelete = RESTRICT
+    ).nullable()
+}
+
 private object Tasks : Table() {
     val id = varchar("id", 36).primaryKey()
+    val jobId = varchar("jobId", 36).references(
+            Jobs.id, onDelete = CASCADE
+    )
     val type = varchar("type", 5)
     val command = varchar("command", 500)
     val runWhen = varchar("runWhen", 6)
@@ -59,6 +72,7 @@ fun initStorage(url: String, driver: String) {
         createMissingTablesAndColumns(
                 Envs,
                 EnvVars,
+                Jobs,
                 Tasks
         )
     }
@@ -100,12 +114,14 @@ fun putTask(task: Task): Unit = transaction {
     when {
         Tasks.select { Tasks.id eq task.id }.empty() -> Tasks.insert {
             it[id] = task.id
+            it[jobId] = task.jobId
             it[type] = task.type.name
             it[command] = task.command
             it[runWhen] = task.runWhen.name
             it[workingDirectory] = task.workingDirectory
         }
         else -> Tasks.update({ Tasks.id eq task.id }) {
+            it[jobId] = task.jobId
             it[type] = task.type.name
             it[command] = task.command
             it[runWhen] = task.runWhen.name
@@ -125,6 +141,7 @@ fun getTask(id: String) = transaction {
 
             Task(
                     id,
+                    result.first()[Tasks.jobId],
                     type,
                     result.first()[Tasks.command],
                     runWhen,
@@ -136,4 +153,52 @@ fun getTask(id: String) = transaction {
 
 fun delTask(id: String) = transaction {
     Tasks.deleteWhere { Tasks.id eq id }
+}
+
+fun putJob(job: Job): Unit = transaction {
+    when {
+        Jobs.select { Jobs.id eq job.id }.empty() -> Jobs.insert {
+            it[id] = job.id
+            it[envId] = job.env?.id
+        }
+        else -> Jobs.update({ Jobs.id eq job.id }) {
+            it[envId] = job.env?.id
+        }
+    }
+}
+
+fun getJob(id: String) = transaction {
+    val jobs = Jobs.select { Jobs.id eq id }
+
+    when {
+        jobs.empty() -> null
+        else -> {
+            val tasks = Tasks.select { Tasks.jobId eq id }.map {
+                Task(
+                        it[Tasks.id],
+                        it[Tasks.jobId],
+                        TaskType.valueOf(it[Tasks.type]),
+                        it[Tasks.command],
+                        RunWhen.valueOf(it[Tasks.runWhen]),
+                        it[Tasks.workingDirectory]
+                )
+            }.toImmutableList()
+
+            val eId = jobs.first()[Jobs.envId]
+            val env = when (eId) {
+                null -> null
+                else -> getEnv(eId)
+            }
+
+            Job(
+                    id,
+                    env,
+                    tasks
+            )
+        }
+    }
+}
+
+fun delJob(id: String) = transaction {
+    Jobs.deleteWhere { Jobs.id eq id }
 }

@@ -134,6 +134,7 @@ fun Application.module() {
                                 id != null && options != null -> {
                                     val task = Task(
                                             id,
+                                            options.jobId,
                                             options.type,
                                             options.command,
                                             options.runWhen,

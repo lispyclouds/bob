@@ -18,9 +18,11 @@
 package bob.core
 
 import bob.core.blocks.Env
+import bob.core.blocks.Job
 import bob.core.blocks.RunWhen
 import bob.core.blocks.Task
 import bob.core.blocks.TaskType
+import kotlinx.collections.immutable.immutableListOf
 import kotlinx.collections.immutable.immutableMapOf
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.given
@@ -50,7 +52,6 @@ object PersistenceTest : Spek({
         }
 
         on("deleting an Env") {
-            putEnv(Env("id1", immutableMapOf("k1" to "v1")))
             delEnv("id1")
 
             it("should return null on fetch") {
@@ -59,8 +60,16 @@ object PersistenceTest : Spek({
         }
 
         on("saving a Task") {
+            val env = Env("id1", immutableMapOf("k1" to "v1"))
+            putEnv(env)
+            putJob(Job(
+                    "job1",
+                    env,
+                    tasks = immutableListOf()
+            ))
             putTask(Task(
                     "id1",
+                    "job1",
                     TaskType.FETCH,
                     "ls",
                     RunWhen.PASSED,
@@ -74,6 +83,7 @@ object PersistenceTest : Spek({
 
                 if (task != null) {
                     assertEquals("id1", task.id)
+                    assertEquals("job1", task.jobId)
                     assertEquals(TaskType.FETCH, task.type)
                     assertEquals("ls", task.command)
                     assertEquals(RunWhen.PASSED, task.runWhen)
@@ -85,16 +95,43 @@ object PersistenceTest : Spek({
         }
 
         on("deleting a Task") {
-            putTask(Task(
-                    "id1",
-                    TaskType.FETCH,
-                    "ls",
-                    RunWhen.PASSED
-            ))
             delTask("id1")
 
             it("should return null on fetch") {
                 assertNull(getTask("id1"))
+            }
+        }
+
+        on("saving a Job") {
+            val env = Env("id2", immutableMapOf("k1" to "v1"))
+            val task = Task(
+                    "id1",
+                    "job1",
+                    TaskType.FETCH,
+                    "ls",
+                    RunWhen.PASSED,
+                    "/tmp"
+            )
+            putEnv(env)
+            putJob(Job(
+                    "job1",
+                    env,
+                    tasks = immutableListOf(task)
+            ))
+            putTask(task)
+
+            it("should save to DB") {
+                val job = getJob("job1")
+
+                assertNotNull(job)
+            }
+        }
+
+        on("deleting a Job") {
+            delJob("job1")
+
+            it("should return null on fetch") {
+                assertNull(getJob("job1"))
             }
         }
 
