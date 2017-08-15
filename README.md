@@ -5,7 +5,8 @@
 
 ![](http://vignette2.wikia.nocookie.net/dreamlogos/images/8/8d/Btb1.png/revision/latest?cb=20150801085138)
 
-This is what CI/CD should've been.
+Bob is a minimal and modular CI/CD engine running entirely as an API.
+Work in progress.
 
 ## Build requirements
 - Preferably any *nix environment
