@@ -18,14 +18,17 @@
 package bob.core
 
 import bob.core.blocks.Env
+import bob.core.blocks.Job
 import bob.core.blocks.RunWhen
 import bob.core.blocks.Task
 import bob.core.blocks.TaskType
+import kotlinx.collections.immutable.immutableListOf
 import kotlinx.collections.immutable.immutableMapOf
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.given
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
+import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
@@ -93,6 +96,61 @@ object SerializationTest : Spek({
 
             it("should give null") {
                 assertNull(jsonToTask(taskJ))
+            }
+        }
+
+        on("converting a Job to JSON") {
+            val env = Env("env1", immutableMapOf("k1" to "v1"))
+            val task = Task("task1", "job1", TaskType.FETCH, "ls",
+                    RunWhen.PASSED)
+            val job = Job(
+                    "job1",
+                    env,
+                    immutableListOf(task)
+            )
+
+            it("should give a JSON String of it") {
+                assertEquals("{\"id\":\"job1\",\"envId\":\"env1\"," +
+                        "\"tasks\":[\"task1\"]}", job.toJson())
+            }
+        }
+
+        on("converting a JSON to Job") {
+            val db = File.createTempFile("bob", ".db")
+
+            initStorage(
+                    url = "jdbc:h2:${db.absolutePath}",
+                    driver = "org.h2.Driver"
+            )
+
+            val env = Env("env1", immutableMapOf("k1" to "v1"))
+            val task = Task("task1", "job1", TaskType.FETCH, "ls",
+                    RunWhen.PASSED)
+            val job = Job(
+                    "job1",
+                    env,
+                    immutableListOf(task)
+            )
+            val jobJ = "{\"id\":\"job1\",\"envId\":\"env1\"," +
+                    "\"tasks\":[\"task1\"]}"
+
+            putEnv(env)
+            putJob(job)
+            putTask(task)
+
+            it("should give a Job object of it") {
+                assertEquals(job, jsonToJob(jobJ))
+            }
+
+            db.deleteOnExit()
+        }
+
+        on("converting a invalid JSON to Job") {
+            val jobJ = "{\"id\":\"job1\",\"envId\":\"env1\"," +
+                    "\"tasks\"}"
+
+            it("should give null") {
+                assertNull(jsonToJob(jobJ))
             }
         }
     }

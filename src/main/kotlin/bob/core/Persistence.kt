@@ -79,7 +79,7 @@ fun initStorage(url: String, driver: String) {
 }
 
 fun putEnv(env: Env) = transaction {
-    // TODO: Optimize
+    // TODO: 2: Optimize
     delEnv(env.id)
 
     Envs.insert { it[id] = env.id }

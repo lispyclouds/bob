@@ -15,13 +15,18 @@
  * along with Bob. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// TODO: 3: Remove when GSON has @Required
+@file:Suppress("SENSELESS_COMPARISON")
+
 package bob.core
 
 import bob.core.blocks.Env
+import bob.core.blocks.Job
 import bob.core.blocks.Task
 import bob.util.jsonStringOf
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableMap
 
 private data class RawEnv(
@@ -32,9 +37,9 @@ private data class RawEnv(
 fun Env.toJson() = jsonStringOf(this)
 
 fun jsonToEnv(json: String) = try {
-    val e = Gson().fromJson(json, RawEnv::class.java)
+    val env = Gson().fromJson(json, RawEnv::class.java)
 
-    if (e != null) Env(e.id, e.variables.toImmutableMap()) else null
+    if (env != null) Env(env.id, env.variables.toImmutableMap()) else null
 } catch (_: JsonSyntaxException) {
     null
 }
@@ -42,20 +47,58 @@ fun jsonToEnv(json: String) = try {
 fun Task.toJson() = jsonStringOf(this)
 
 fun jsonToTask(json: String) = try {
-    val t = Gson().fromJson(json, Task::class.java)
+    val task = Gson().fromJson(json, Task::class.java)
 
-    // TODO: Remove when GSON has @Required
-    @Suppress("SENSELESS_COMPARISON")
     when {
-        t == null || t.type == null || t.runWhen == null -> null
+        task == null || task.type == null || task.runWhen == null -> null
         else -> Task(
-                t.id,
-                t.jobId,
-                t.type,
-                t.command,
-                t.runWhen,
-                t.workingDirectory ?: "."
+                task.id,
+                task.jobId,
+                task.type,
+                task.command,
+                task.runWhen,
+                task.workingDirectory ?: "."
         )
+    }
+} catch (_: JsonSyntaxException) {
+    null
+}
+
+private data class RawJob(
+        val id: String,
+        val envId: String?,
+        val tasks: List<String>
+)
+
+// TODO: Remove !! when (1) is done
+fun Job.toJson() = jsonStringOf(RawJob(
+        this.id,
+        this.env?.id,
+        this.tasks.map { it.id!! }
+))
+
+fun jsonToJob(json: String) = try {
+    val job = Gson().fromJson(json, RawJob::class.java)
+    val env = when (job.envId) {
+        null -> null
+        "" -> null
+        else -> getEnv(job.envId)
+    }
+
+    when {
+        job == null || job.tasks == null -> null
+        else -> {
+            val tasks = job.tasks.map { getTask(it) }
+
+            when {
+                tasks.any { it == null } -> null
+                else -> Job(
+                        job.id,
+                        env,
+                        job.tasks.map { getTask(it)!! }.toImmutableList()
+                )
+            }
+        }
     }
 } catch (_: JsonSyntaxException) {
     null
