@@ -18,6 +18,7 @@
 package bob.core
 
 import bob.core.blocks.Env
+import bob.core.blocks.Job
 import bob.core.blocks.Task
 import bob.util.putIfCorrect
 import bob.util.respondIfExists
@@ -164,6 +165,69 @@ fun Application.module() {
                         null -> respondWith404(call)
                         else -> {
                             delTask(id)
+                            respondWith(call, "Ok")
+                        }
+                    }
+                }
+            }
+        }
+
+        route("/job") {
+            route("/{id}") {
+                get {
+                    val id = call.parameters["id"]
+
+                    when (id) {
+                        null -> respondWith404(call)
+                        else -> respondIfExists(call, getJob(id), Job::toJson)
+                    }
+                }
+
+                put {
+                    val id = call.parameters["id"]
+                    val jobOptions = call.request.receive<String>()
+
+                    when {
+                        jobOptions.isEmpty() -> {
+                            respondWith(
+                                    call,
+                                    "Invalid Job provided",
+                                    HttpStatusCode.BadRequest
+                            )
+                        }
+                        else -> {
+                            val options = jsonToJob(jobOptions)
+
+                            when {
+                                id != null && options != null -> {
+                                    val job = Job(
+                                            id,
+                                            options.env,
+                                            options.tasks
+                                    )
+
+                                    putJob(job)
+                                    respondWith(call, "Ok")
+                                }
+                                else -> {
+                                    respondWith(
+                                            call,
+                                            "Invalid Job provided",
+                                            HttpStatusCode.BadRequest
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                delete {
+                    val id = call.parameters["id"]
+
+                    when (id) {
+                        null -> respondWith404(call)
+                        else -> {
+                            delJob(id)
                             respondWith(call, "Ok")
                         }
                     }

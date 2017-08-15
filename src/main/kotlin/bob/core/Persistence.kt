@@ -29,6 +29,7 @@ import org.jetbrains.exposed.sql.ReferenceOption.CASCADE
 import org.jetbrains.exposed.sql.ReferenceOption.RESTRICT
 import org.jetbrains.exposed.sql.SchemaUtils.createMissingTablesAndColumns
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
@@ -161,8 +162,15 @@ fun putJob(job: Job): Unit = transaction {
             it[id] = job.id
             it[envId] = job.env?.id
         }
-        else -> Jobs.update({ Jobs.id eq job.id }) {
-            it[envId] = job.env?.id
+        else -> {
+            Jobs.update({ Jobs.id eq job.id }) {
+                it[envId] = job.env?.id
+            }
+
+            val associatedTasks = job.tasks.map { it.id }
+            Tasks.deleteWhere {
+                Tasks.id eq job.id and (Tasks.jobId notInList associatedTasks)
+            }
         }
     }
 }
@@ -190,11 +198,7 @@ fun getJob(id: String) = transaction {
                 else -> getEnv(eId)
             }
 
-            Job(
-                    id,
-                    env,
-                    tasks
-            )
+            Job(id, env, tasks)
         }
     }
 }

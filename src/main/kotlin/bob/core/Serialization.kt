@@ -50,7 +50,7 @@ fun jsonToTask(json: String) = try {
     val task = Gson().fromJson(json, Task::class.java)
 
     when {
-        task == null || task.type == null || task.runWhen == null -> null
+        task?.type == null || task.runWhen == null -> null
         else -> Task(
                 task.id,
                 task.jobId,
@@ -65,7 +65,7 @@ fun jsonToTask(json: String) = try {
 }
 
 private data class RawJob(
-        val id: String,
+        val id: String?,
         val envId: String?,
         val tasks: List<String>
 )
@@ -86,7 +86,7 @@ fun jsonToJob(json: String) = try {
     }
 
     when {
-        job == null || job.tasks == null -> null
+        job?.tasks == null -> null
         else -> {
             val tasks = job.tasks.map { getTask(it) }
 
