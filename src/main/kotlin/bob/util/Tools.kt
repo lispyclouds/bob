@@ -33,48 +33,48 @@ suspend fun respondWith(call: ApplicationCall, message: String,
                         status: HttpStatusCode = HttpStatusCode.OK) {
     call.response.status(status)
     call.respondText(
-            GenericResponse(message).asJsonString(),
-            ContentType.Application.Json
+        GenericResponse(message).asJsonString(),
+        ContentType.Application.Json
     )
 }
 
 suspend fun respondWith404(call: ApplicationCall) {
     call.response.status(HttpStatusCode.NotFound)
     call.respondText(
-            GenericResponse("Sorry, Not found!").asJsonString(),
-            ContentType.Application.Json
+        GenericResponse("Sorry, Not found!").asJsonString(),
+        ContentType.Application.Json
     )
 }
 
 suspend fun respondWithError(call: ApplicationCall) {
     call.response.status(HttpStatusCode.InternalServerError)
     call.respondText(
-            GenericResponse("Internal Error happened!").asJsonString(),
-            ContentType.Application.Json
+        GenericResponse("Internal Error happened!").asJsonString(),
+        ContentType.Application.Json
     )
 }
 
 suspend fun respondWithBadRequest(call: ApplicationCall) {
     call.response.status(HttpStatusCode.BadRequest)
     call.respondText(
-            GenericResponse("Bad request: Please check the params supplied")
-                    .asJsonString(),
-            ContentType.Application.Json
+        GenericResponse("Bad request: Please check the params supplied")
+            .asJsonString(),
+        ContentType.Application.Json
     )
 }
 
 suspend fun <T> respondIfExists(call: ApplicationCall, obj: T?,
                                 serializeUsing: (T) -> String) =
-        when (obj) {
-            null -> respondWith404(call)
-            else -> {
-                call.response.status(HttpStatusCode.OK)
-                call.respondText(
-                        serializeUsing(obj),
-                        ContentType.Application.Json
-                )
-            }
+    when (obj) {
+        null -> respondWith404(call)
+        else -> {
+            call.response.status(HttpStatusCode.OK)
+            call.respondText(
+                serializeUsing(obj),
+                ContentType.Application.Json
+            )
         }
+    }
 
 suspend fun <T> putIfCorrect(call: ApplicationCall, requestJson: String,
                              deserializeUsing: (String) -> T?,

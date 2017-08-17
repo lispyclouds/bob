@@ -30,8 +30,8 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableMap
 
 private data class RawEnv(
-        val id: String,
-        val variables: Map<String, String>
+    val id: String,
+    val variables: Map<String, String>
 )
 
 fun Env.toJson() = jsonStringOf(this)
@@ -52,12 +52,12 @@ fun jsonToTask(json: String) = try {
     when {
         task?.type == null || task.runWhen == null -> null
         else -> Task(
-                task.id,
-                task.jobId,
-                task.type,
-                task.command,
-                task.runWhen,
-                task.workingDirectory ?: "."
+            task.id,
+            task.jobId,
+            task.type,
+            task.command,
+            task.runWhen,
+            task.workingDirectory ?: "."
         )
     }
 } catch (_: JsonSyntaxException) {
@@ -65,16 +65,16 @@ fun jsonToTask(json: String) = try {
 }
 
 private data class RawJob(
-        val id: String?,
-        val envId: String?,
-        val tasks: List<String>
+    val id: String?,
+    val envId: String?,
+    val tasks: List<String>
 )
 
 // TODO: Remove !! when (1) is done
 fun Job.toJson() = jsonStringOf(RawJob(
-        this.id,
-        this.env?.id,
-        this.tasks.map { it.id!! }
+    this.id,
+    this.env?.id,
+    this.tasks.map { it.id!! }
 ))
 
 fun jsonToJob(json: String) = try {
@@ -93,9 +93,9 @@ fun jsonToJob(json: String) = try {
             when {
                 tasks.any { it == null } -> null
                 else -> Job(
-                        job.id,
-                        env,
-                        job.tasks.map { getTask(it)!! }.toImmutableList()
+                    job.id,
+                    env,
+                    job.tasks.map { getTask(it)!! }.toImmutableList()
                 )
             }
         }

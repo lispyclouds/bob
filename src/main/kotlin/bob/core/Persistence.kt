@@ -43,7 +43,7 @@ private object Envs : Table() {
 
 private object EnvVars : Table() {
     val id = varchar("id", 36).references(
-            Envs.id, onDelete = CASCADE
+        Envs.id, onDelete = CASCADE
     )
     val key = varchar("key", 30)
     val value = varchar("value", 50)
@@ -52,14 +52,14 @@ private object EnvVars : Table() {
 private object Jobs : Table() {
     val id = varchar("id", 36).primaryKey()
     val envId = varchar("envId", 36).references(
-            Envs.id, onDelete = RESTRICT
+        Envs.id, onDelete = RESTRICT
     ).nullable()
 }
 
 private object Tasks : Table() {
     val id = varchar("id", 36).primaryKey()
     val jobId = varchar("jobId", 36).references(
-            Jobs.id, onDelete = CASCADE
+        Jobs.id, onDelete = CASCADE
     )
     val type = varchar("type", 5)
     val command = varchar("command", 500)
@@ -72,10 +72,10 @@ fun initStorage(url: String, driver: String) {
 
     transaction {
         createMissingTablesAndColumns(
-                Envs,
-                EnvVars,
-                Jobs,
-                Tasks
+            Envs,
+            EnvVars,
+            Jobs,
+            Tasks
         )
     }
 }
@@ -148,12 +148,12 @@ fun getTask(id: String) = transaction {
             val runWhen = RunWhen.valueOf(result.first()[Tasks.runWhen])
 
             Task(
-                    id,
-                    result.first()[Tasks.jobId],
-                    type,
-                    result.first()[Tasks.command],
-                    runWhen,
-                    result.first()[Tasks.workingDirectory]
+                id,
+                result.first()[Tasks.jobId],
+                type,
+                result.first()[Tasks.command],
+                runWhen,
+                result.first()[Tasks.workingDirectory]
             )
         }
     }
@@ -190,12 +190,12 @@ fun getJob(id: String) = transaction {
         else -> {
             val tasks = Tasks.select { Tasks.jobId eq id }.map {
                 Task(
-                        it[Tasks.id],
-                        it[Tasks.jobId],
-                        TaskType.valueOf(it[Tasks.type]),
-                        it[Tasks.command],
-                        RunWhen.valueOf(it[Tasks.runWhen]),
-                        it[Tasks.workingDirectory]
+                    it[Tasks.id],
+                    it[Tasks.jobId],
+                    TaskType.valueOf(it[Tasks.type]),
+                    it[Tasks.command],
+                    RunWhen.valueOf(it[Tasks.runWhen]),
+                    it[Tasks.workingDirectory]
                 )
             }.toImmutableList()
 

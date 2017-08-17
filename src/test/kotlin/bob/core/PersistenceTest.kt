@@ -39,8 +39,8 @@ object PersistenceTest : Spek({
         val db = File.createTempFile("bob", ".db")
 
         initStorage(
-                url = "jdbc:h2:${db.absolutePath}",
-                driver = "org.h2.Driver"
+            url = "jdbc:h2:${db.absolutePath}",
+            driver = "org.h2.Driver"
         )
 
         on("saving an Env") {
@@ -63,17 +63,17 @@ object PersistenceTest : Spek({
             val env = Env("id1", immutableMapOf("k1" to "v1"))
             putEnv(env)
             putJob(Job(
-                    "job1",
-                    env,
-                    tasks = immutableListOf()
+                "job1",
+                env,
+                tasks = immutableListOf()
             ))
             putTask(Task(
-                    "id1",
-                    "job1",
-                    TaskType.FETCH,
-                    "ls",
-                    RunWhen.PASSED,
-                    "/tmp"
+                "id1",
+                "job1",
+                TaskType.FETCH,
+                "ls",
+                RunWhen.PASSED,
+                "/tmp"
             ))
 
             it("should save to DB") {
@@ -105,18 +105,18 @@ object PersistenceTest : Spek({
         on("saving a Job") {
             val env = Env("id2", immutableMapOf("k1" to "v1"))
             val task = Task(
-                    "id1",
-                    "job1",
-                    TaskType.FETCH,
-                    "ls",
-                    RunWhen.PASSED,
-                    "/tmp"
+                "id1",
+                "job1",
+                TaskType.FETCH,
+                "ls",
+                RunWhen.PASSED,
+                "/tmp"
             )
             putEnv(env)
             putJob(Job(
-                    "job1",
-                    env,
-                    tasks = immutableListOf(task)
+                "job1",
+                env,
+                tasks = immutableListOf(task)
             ))
             putTask(task)
 

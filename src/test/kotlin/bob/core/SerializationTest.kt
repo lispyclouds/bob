@@ -40,8 +40,8 @@ object SerializationTest : Spek({
 
             it("should give a JSON String of it") {
                 assertEquals(
-                        "{\"id\":\"id1\",\"variables\":{\"k1\":\"v1\"}}",
-                        env.toJson()
+                    "{\"id\":\"id1\",\"variables\":{\"k1\":\"v1\"}}",
+                    env.toJson()
                 )
             }
         }
@@ -65,25 +65,25 @@ object SerializationTest : Spek({
 
         on("converting a Task to JSON") {
             val task = Task("id1", "job1", TaskType.FETCH, "ls",
-                    RunWhen.PASSED)
+                RunWhen.PASSED)
 
             it("should give a JSON String of it") {
                 assertEquals(
-                        "{\"id\":\"id1\",\"jobId\":\"job1\"," +
-                                "\"type\":\"fetch\",\"command\":\"ls\"," +
-                                "\"runWhen\":\"passed\"," +
-                                "\"workingDirectory\":\".\"}",
-                        task.toJson()
+                    "{\"id\":\"id1\",\"jobId\":\"job1\"," +
+                        "\"type\":\"fetch\",\"command\":\"ls\"," +
+                        "\"runWhen\":\"passed\"," +
+                        "\"workingDirectory\":\".\"}",
+                    task.toJson()
                 )
             }
         }
 
         on("converting a JSON to Task") {
             val task = Task("id1", "job1", TaskType.FETCH, "ls",
-                    RunWhen.PASSED)
+                RunWhen.PASSED)
             val taskJ = "{\"id\":\"id1\",\"jobId\":\"job1\"," +
-                    "\"type\":\"fetch\",\"command\":\"ls\"," +
-                    "\"runWhen\":\"passed\"}"
+                "\"type\":\"fetch\",\"command\":\"ls\"," +
+                "\"runWhen\":\"passed\"}"
 
             it("should give a Task object of it") {
                 assertEquals(jsonToTask(taskJ), task)
@@ -92,7 +92,7 @@ object SerializationTest : Spek({
 
         on("converting a invalid JSON to Task") {
             val taskJ = "{\"id\":\"id1\",\"type\":\"fetch\"," +
-                    "\"command\":\"ls\",\"runWhen\":}"
+                "\"command\":\"ls\",\"runWhen\":}"
 
             it("should give null") {
                 assertNull(jsonToTask(taskJ))
@@ -102,16 +102,16 @@ object SerializationTest : Spek({
         on("converting a Job to JSON") {
             val env = Env("env1", immutableMapOf("k1" to "v1"))
             val task = Task("task1", "job1", TaskType.FETCH, "ls",
-                    RunWhen.PASSED)
+                RunWhen.PASSED)
             val job = Job(
-                    "job1",
-                    env,
-                    immutableListOf(task)
+                "job1",
+                env,
+                immutableListOf(task)
             )
 
             it("should give a JSON String of it") {
                 assertEquals("{\"id\":\"job1\",\"envId\":\"env1\"," +
-                        "\"tasks\":[\"task1\"]}", job.toJson())
+                    "\"tasks\":[\"task1\"]}", job.toJson())
             }
         }
 
@@ -119,20 +119,20 @@ object SerializationTest : Spek({
             val db = File.createTempFile("bob", ".db")
 
             initStorage(
-                    url = "jdbc:h2:${db.absolutePath}",
-                    driver = "org.h2.Driver"
+                url = "jdbc:h2:${db.absolutePath}",
+                driver = "org.h2.Driver"
             )
 
             val env = Env("env1", immutableMapOf("k1" to "v1"))
             val task = Task("task1", "job1", TaskType.FETCH, "ls",
-                    RunWhen.PASSED)
+                RunWhen.PASSED)
             val job = Job(
-                    "job1",
-                    env,
-                    immutableListOf(task)
+                "job1",
+                env,
+                immutableListOf(task)
             )
             val jobJ = "{\"id\":\"job1\",\"envId\":\"env1\"," +
-                    "\"tasks\":[\"task1\"]}"
+                "\"tasks\":[\"task1\"]}"
 
             putEnv(env)
             putJob(job)
@@ -147,7 +147,7 @@ object SerializationTest : Spek({
 
         on("converting a invalid JSON to Job") {
             val jobJ = "{\"id\":\"job1\",\"envId\":\"env1\"," +
-                    "\"tasks\"}"
+                "\"tasks\"}"
 
             it("should give null") {
                 assertNull(jsonToJob(jobJ))

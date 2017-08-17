@@ -21,18 +21,18 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.collections.immutable.ImmutableMap
 
 data class Env(
-        val id: String,
+    val id: String,
 
-        @SerializedName("variables")
-        val vars: ImmutableMap<String, String>
+    @SerializedName("variables")
+    val vars: ImmutableMap<String, String>
 )
 
 fun addVarIn(env: Env, key: String, value: String) = Env(
-        env.id,
-        env.vars.put(key, value)
+    env.id,
+    env.vars.put(key, value)
 )
 
 fun removeVarFrom(env: Env, key: String) = Env(
-        env.id,
-        env.vars.remove(key)
+    env.id,
+    env.vars.remove(key)
 )

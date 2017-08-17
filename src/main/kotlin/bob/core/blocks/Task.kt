@@ -20,22 +20,27 @@ package bob.core.blocks
 import com.google.gson.annotations.SerializedName
 
 enum class TaskType {
-    @SerializedName("fetch") FETCH,
-    @SerializedName("shell") SHELL
+    @SerializedName("fetch")
+    FETCH,
+    @SerializedName("shell")
+    SHELL
 }
 
 enum class RunWhen {
-    @SerializedName("failed") FAILED,
-    @SerializedName("passed") PASSED,
-    @SerializedName("any") ANY
+    @SerializedName("failed")
+    FAILED,
+    @SerializedName("passed")
+    PASSED,
+    @SerializedName("any")
+    ANY
 }
 
 data class Task(
-        // TODO: 1: Find a better way to serialize
-        val id: String?,
-        val jobId: String,
-        val type: TaskType,
-        val command: String,
-        val runWhen: RunWhen,
-        val workingDirectory: String? = "."
+    // TODO: 1: Find a better way to serialize
+    val id: String?,
+    val jobId: String,
+    val type: TaskType,
+    val command: String,
+    val runWhen: RunWhen,
+    val workingDirectory: String? = "."
 )

@@ -75,9 +75,9 @@ fun Application.module() {
                     when {
                         rawVars.isEmpty() -> {
                             respondWith(
-                                    call,
-                                    "Invalid Env provided",
-                                    HttpStatusCode.BadRequest
+                                call,
+                                "Invalid Env provided",
+                                HttpStatusCode.BadRequest
                             )
                         }
                         else -> {
@@ -124,9 +124,9 @@ fun Application.module() {
                     when {
                         taskOptions.isEmpty() -> {
                             respondWith(
-                                    call,
-                                    "Invalid Task provided",
-                                    HttpStatusCode.BadRequest
+                                call,
+                                "Invalid Task provided",
+                                HttpStatusCode.BadRequest
                             )
                         }
                         else -> {
@@ -135,28 +135,28 @@ fun Application.module() {
                             when {
                                 id != null && options != null -> {
                                     val task = Task(
-                                            id,
-                                            options.jobId,
-                                            options.type,
-                                            options.command,
-                                            options.runWhen,
-                                            options.workingDirectory
+                                        id,
+                                        options.jobId,
+                                        options.type,
+                                        options.command,
+                                        options.runWhen,
+                                        options.workingDirectory
                                     )
 
                                     if (putTask(task))
                                         respondWith(call, "Ok")
                                     else
                                         respondWith(
-                                                call,
-                                                "Invalid Job ID",
-                                                HttpStatusCode.BadRequest
+                                            call,
+                                            "Invalid Job ID",
+                                            HttpStatusCode.BadRequest
                                         )
                                 }
                                 else -> {
                                     respondWith(
-                                            call,
-                                            "Invalid Task options provided",
-                                            HttpStatusCode.BadRequest
+                                        call,
+                                        "Invalid Task options provided",
+                                        HttpStatusCode.BadRequest
                                     )
                                 }
                             }
@@ -196,9 +196,9 @@ fun Application.module() {
                     when {
                         jobOptions.isEmpty() -> {
                             respondWith(
-                                    call,
-                                    "Invalid Job provided",
-                                    HttpStatusCode.BadRequest
+                                call,
+                                "Invalid Job provided",
+                                HttpStatusCode.BadRequest
                             )
                         }
                         else -> {
@@ -207,9 +207,9 @@ fun Application.module() {
                             when {
                                 id != null && options != null -> {
                                     val job = Job(
-                                            id,
-                                            options.env,
-                                            options.tasks
+                                        id,
+                                        options.env,
+                                        options.tasks
                                     )
 
                                     putJob(job)
@@ -217,9 +217,9 @@ fun Application.module() {
                                 }
                                 else -> {
                                     respondWith(
-                                            call,
-                                            "Invalid parameters provided",
-                                            HttpStatusCode.BadRequest
+                                        call,
+                                        "Invalid parameters provided",
+                                        HttpStatusCode.BadRequest
                                     )
                                 }
                             }

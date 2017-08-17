@@ -26,15 +26,15 @@ import java.io.File
 
 fun main(args: Array<String>) {
     initStorage(
-            url = "jdbc:h2:${System.getProperty("user.home")}" +
-                    "${File.separator}.bob",
-            driver = "org.h2.Driver"
+        url = "jdbc:h2:${System.getProperty("user.home")}" +
+            "${File.separator}.bob",
+        driver = "org.h2.Driver"
     )
 
     embeddedServer(
-            Netty,
-            port = 7777,
-            reloadPackages = listOf("MainKt"),
-            module = Application::module
+        Netty,
+        port = 7777,
+        reloadPackages = listOf("MainKt"),
+        module = Application::module
     ).start()
 }
