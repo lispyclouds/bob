@@ -26,12 +26,11 @@ import bob.util.respondWith
 import bob.util.respondWith404
 import bob.util.respondWithError
 import org.jetbrains.ktor.application.Application
-import org.jetbrains.ktor.application.call
 import org.jetbrains.ktor.application.install
-import org.jetbrains.ktor.application.receive
+import org.jetbrains.ktor.features.CallLogging
 import org.jetbrains.ktor.features.StatusPages
 import org.jetbrains.ktor.http.HttpStatusCode
-import org.jetbrains.ktor.logging.CallLogging
+import org.jetbrains.ktor.request.receive
 import org.jetbrains.ktor.routing.Routing
 import org.jetbrains.ktor.routing.delete
 import org.jetbrains.ktor.routing.get
@@ -70,7 +69,7 @@ fun Application.module() {
 
                 put {
                     val id = call.parameters["id"]
-                    val rawVars = call.request.receive<String>()
+                    val rawVars = call.receive<String>()
 
                     when {
                         rawVars.isEmpty() -> {
@@ -119,7 +118,7 @@ fun Application.module() {
 
                 put {
                     val id = call.parameters["id"]
-                    val taskOptions = call.request.receive<String>()
+                    val taskOptions = call.receive<String>()
 
                     when {
                         taskOptions.isEmpty() -> {
@@ -191,7 +190,7 @@ fun Application.module() {
 
                 put {
                     val id = call.parameters["id"]
-                    val jobOptions = call.request.receive<String>()
+                    val jobOptions = call.receive<String>()
 
                     when {
                         jobOptions.isEmpty() -> {

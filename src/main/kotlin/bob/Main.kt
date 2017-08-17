@@ -34,7 +34,7 @@ fun main(args: Array<String>) {
     embeddedServer(
         Netty,
         port = 7777,
-        reloadPackages = listOf("MainKt"),
+        watchPaths = listOf("MainKt"),
         module = Application::module
     ).start()
 }
