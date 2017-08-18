@@ -27,7 +27,6 @@ import bob.util.respondWith404
 import bob.util.respondWithError
 import org.jetbrains.ktor.application.Application
 import org.jetbrains.ktor.application.install
-import org.jetbrains.ktor.features.CallLogging
 import org.jetbrains.ktor.features.StatusPages
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.request.receive
@@ -38,8 +37,6 @@ import org.jetbrains.ktor.routing.put
 import org.jetbrains.ktor.routing.route
 
 fun Application.module() {
-    install(CallLogging)
-
     install(StatusPages) {
         status(HttpStatusCode.NotFound) {
             respondWith404(call)
