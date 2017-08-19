@@ -17,6 +17,4 @@
 
 package bob.core.blocks
 
-data class Tag(
-    val name: String
-)
+data class Tag(val name: String)

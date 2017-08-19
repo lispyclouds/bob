@@ -57,12 +57,7 @@ fun Application.module() {
         route("/env") {
             route("/{id}") {
                 get {
-                    val id = call.parameters["id"]
-
-                    when (id) {
-                        null -> respondWith404(call)
-                        else -> respondIfExists(call, getEnv(id), Env::toJson)
-                    }
+                    respondIfExists(call, ::getEnv, Env::toJson)
                 }
 
                 put {
@@ -106,12 +101,7 @@ fun Application.module() {
         route("/task") {
             route("/{id}") {
                 get {
-                    val id = call.parameters["id"]
-
-                    when (id) {
-                        null -> respondWith404(call)
-                        else -> respondIfExists(call, getTask(id), Task::toJson)
-                    }
+                    respondIfExists(call, ::getTask, Task::toJson)
                 }
 
                 put {
@@ -178,12 +168,7 @@ fun Application.module() {
         route("/job") {
             route("/{id}") {
                 get {
-                    val id = call.parameters["id"]
-
-                    when (id) {
-                        null -> respondWith404(call)
-                        else -> respondIfExists(call, getJob(id), Job::toJson)
-                    }
+                    respondIfExists(call, ::getJob, Job::toJson)
                 }
 
                 put {
@@ -241,6 +226,10 @@ fun Application.module() {
 
         route("/tag") {
             route("/{name}") {
+                get {
+                    respondIfExists(call, ::getTag, null, "name")
+                }
+
                 put {
                     val name = call.parameters["name"]
 
@@ -249,18 +238,6 @@ fun Application.module() {
                         else -> {
                             putTag(Tag(name))
                             respondWith(call, "Ok")
-                        }
-                    }
-                }
-
-                get {
-                    val name = call.parameters["name"]
-
-                    when (name) {
-                        null -> respondWith404(call)
-                        else -> {
-                            if (getTag(name) != null) respondWith(call, name)
-                            else respondWith404(call)
                         }
                     }
                 }

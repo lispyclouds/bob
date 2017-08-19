@@ -63,18 +63,35 @@ suspend fun respondWithBadRequest(call: ApplicationCall) {
     )
 }
 
-suspend fun <T> respondIfExists(call: ApplicationCall, obj: T?,
-                                serializeUsing: (T) -> String) =
-    when (obj) {
-        null -> respondWith404(call)
+suspend fun <T> respondIfExists(call: ApplicationCall,
+                                getUsing: (String) -> T?,
+                                serializeUsing: ((T) -> String)?,
+                                param: String = "id") {
+    val id = call.parameters[param]
+
+    when (id) {
+        null -> respondWithBadRequest(call)
         else -> {
-            call.response.status(HttpStatusCode.OK)
-            call.respondText(
-                serializeUsing(obj),
-                ContentType.Application.Json
-            )
+            val entity = getUsing(id)
+
+            when (entity) {
+                null -> respondWith404(call)
+                else -> {
+                    call.response.status(HttpStatusCode.OK)
+
+                    if (serializeUsing != null) {
+                        call.respondText(
+                            serializeUsing(entity),
+                            ContentType.Application.Json
+                        )
+                    } else {
+                        respondWith(call, "Ok")
+                    }
+                }
+            }
         }
     }
+}
 
 suspend fun <T> putIfCorrect(call: ApplicationCall, requestJson: String,
                              deserializeUsing: (String) -> T?,
