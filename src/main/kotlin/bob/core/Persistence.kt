@@ -20,6 +20,7 @@ package bob.core
 import bob.core.blocks.Env
 import bob.core.blocks.Job
 import bob.core.blocks.RunWhen
+import bob.core.blocks.Tag
 import bob.core.blocks.Task
 import bob.core.blocks.TaskType
 import kotlinx.collections.immutable.toImmutableList
@@ -57,6 +58,10 @@ private object Jobs : Table() {
     val name = varchar("name", 50)
 }
 
+private object Tags : Table() {
+    val name = varchar("name", 50).primaryKey()
+}
+
 private object Tasks : Table() {
     val id = varchar("id", 36).primaryKey()
     val jobId = varchar("jobId", 36).references(
@@ -76,7 +81,8 @@ fun initStorage(url: String, driver: String) {
             Envs,
             EnvVars,
             Jobs,
-            Tasks
+            Tasks,
+            Tags
         )
     }
 }
@@ -216,4 +222,22 @@ fun getJob(id: String) = transaction {
 
 fun delJob(id: String) = transaction {
     Jobs.deleteWhere { Jobs.id eq id }
+}
+
+fun putTag(tag: Tag) = transaction {
+    if (Tags.select { Tags.name eq tag.name }.empty()) {
+        Tags.insert { it[name] = tag.name }
+    }
+}
+
+fun getTag(name: String) = transaction {
+    if (Tags.select { Tags.name eq name }.empty()) {
+        null
+    } else {
+        Tag(name)
+    }
+}
+
+fun delTag(name: String) = transaction {
+    Tags.deleteWhere { Tags.name eq name }
 }

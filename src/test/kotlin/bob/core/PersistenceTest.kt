@@ -20,6 +20,7 @@ package bob.core
 import bob.core.blocks.Env
 import bob.core.blocks.Job
 import bob.core.blocks.RunWhen
+import bob.core.blocks.Tag
 import bob.core.blocks.Task
 import bob.core.blocks.TaskType
 import kotlinx.collections.immutable.immutableListOf
@@ -134,6 +135,24 @@ object PersistenceTest : Spek({
 
             it("should return null on fetch") {
                 assertNull(getJob("job1"))
+            }
+        }
+
+        on("saving a Tag") {
+            putTag(Tag("tag1"))
+
+            it("should save to DB") {
+                val tag = getTag("tag1")
+
+                assertNotNull(tag)
+            }
+        }
+
+        on("deleting a Tag") {
+            delTag("tag1")
+
+            it("should return null on fetch") {
+                assertNull(getTag("tag1"))
             }
         }
 

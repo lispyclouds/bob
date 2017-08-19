@@ -19,6 +19,7 @@ package bob.core
 
 import bob.core.blocks.Env
 import bob.core.blocks.Job
+import bob.core.blocks.Tag
 import bob.core.blocks.Task
 import bob.util.putIfCorrect
 import bob.util.respondIfExists
@@ -231,6 +232,46 @@ fun Application.module() {
                         null -> respondWith404(call)
                         else -> {
                             delJob(id)
+                            respondWith(call, "Ok")
+                        }
+                    }
+                }
+            }
+        }
+
+        route("/tag") {
+            route("/{name}") {
+                put {
+                    val name = call.parameters["name"]
+
+                    when (name) {
+                        null -> respondWith404(call)
+                        else -> {
+                            putTag(Tag(name))
+                            respondWith(call, "Ok")
+                        }
+                    }
+                }
+
+                get {
+                    val name = call.parameters["name"]
+
+                    when (name) {
+                        null -> respondWith404(call)
+                        else -> {
+                            if (getTag(name) != null) respondWith(call, name)
+                            else respondWith404(call)
+                        }
+                    }
+                }
+
+                delete {
+                    val name = call.parameters["name"]
+
+                    when (name) {
+                        null -> respondWith404(call)
+                        else -> {
+                            delTag(name)
                             respondWith(call, "Ok")
                         }
                     }
