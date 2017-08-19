@@ -103,3 +103,16 @@ suspend fun <T> putIfCorrect(call: ApplicationCall, requestJson: String,
         else -> putUsing(entity)
     }
 }
+
+suspend fun deleteEntity(call: ApplicationCall, using: (String) -> Int,
+                         param: String = "id") {
+    val id = call.parameters[param]
+
+    when (id) {
+        null -> respondWithBadRequest(call)
+        else -> {
+            using(id)
+            respondWith(call, "Ok")
+        }
+    }
+}

@@ -21,6 +21,7 @@ import bob.core.blocks.Env
 import bob.core.blocks.Job
 import bob.core.blocks.Tag
 import bob.core.blocks.Task
+import bob.util.deleteEntity
 import bob.util.putIfCorrect
 import bob.util.respondIfExists
 import bob.util.respondWith
@@ -85,15 +86,7 @@ fun Application.module() {
                 }
 
                 delete {
-                    val id = call.parameters["id"]
-
-                    when (id) {
-                        null -> respondWith404(call)
-                        else -> {
-                            delEnv(id)
-                            respondWith(call, "Ok")
-                        }
-                    }
+                    deleteEntity(call, ::delEnv)
                 }
             }
         }
@@ -152,15 +145,7 @@ fun Application.module() {
                 }
 
                 delete {
-                    val id = call.parameters["id"]
-
-                    when (id) {
-                        null -> respondWith404(call)
-                        else -> {
-                            delTask(id)
-                            respondWith(call, "Ok")
-                        }
-                    }
+                    deleteEntity(call, ::delTask)
                 }
             }
         }
@@ -211,15 +196,7 @@ fun Application.module() {
                 }
 
                 delete {
-                    val id = call.parameters["id"]
-
-                    when (id) {
-                        null -> respondWith404(call)
-                        else -> {
-                            delJob(id)
-                            respondWith(call, "Ok")
-                        }
-                    }
+                    deleteEntity(call, ::delJob)
                 }
             }
         }
@@ -243,15 +220,7 @@ fun Application.module() {
                 }
 
                 delete {
-                    val name = call.parameters["name"]
-
-                    when (name) {
-                        null -> respondWith404(call)
-                        else -> {
-                            delTag(name)
-                            respondWith(call, "Ok")
-                        }
-                    }
+                    deleteEntity(call, ::delTag, "name")
                 }
             }
         }
