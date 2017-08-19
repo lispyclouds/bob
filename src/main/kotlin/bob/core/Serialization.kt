@@ -66,6 +66,7 @@ fun jsonToTask(json: String) = try {
 
 private data class RawJob(
     val id: String?,
+    val name: String,
     val envId: String?,
     val tasks: List<String>
 )
@@ -73,6 +74,7 @@ private data class RawJob(
 // TODO: Remove !! when (1) is done
 fun Job.toJson() = jsonStringOf(RawJob(
     this.id,
+    this.name,
     this.env?.id,
     this.tasks.map { it.id!! }
 ))
@@ -86,7 +88,7 @@ fun jsonToJob(json: String) = try {
     }
 
     when {
-        job?.tasks == null -> null
+        job?.tasks == null || job.name == null -> null
         else -> {
             val tasks = job.tasks.map { getTask(it) }
 
@@ -94,6 +96,7 @@ fun jsonToJob(json: String) = try {
                 tasks.any { it == null } -> null
                 else -> Job(
                     job.id,
+                    job.name,
                     env,
                     job.tasks.map { getTask(it)!! }.toImmutableList()
                 )

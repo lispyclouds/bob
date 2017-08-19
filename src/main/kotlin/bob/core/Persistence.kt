@@ -54,6 +54,7 @@ private object Jobs : Table() {
     val envId = varchar("envId", 36).references(
         Envs.id, onDelete = RESTRICT
     ).nullable()
+    val name = varchar("name", 50)
 }
 
 private object Tasks : Table() {
@@ -168,10 +169,12 @@ fun putJob(job: Job): Unit = transaction {
         Jobs.select { Jobs.id eq job.id }.empty() -> Jobs.insert {
             it[id] = job.id
             it[envId] = job.env?.id
+            it[name] = job.name
         }
         else -> {
             Jobs.update({ Jobs.id eq job.id }) {
                 it[envId] = job.env?.id
+                it[name] = job.name
             }
 
             val associatedTasks = job.tasks.map { it.id }
@@ -200,12 +203,13 @@ fun getJob(id: String) = transaction {
             }.toImmutableList()
 
             val eId = jobs.first()[Jobs.envId]
+            val name = jobs.first()[Jobs.name]
             val env = when (eId) {
                 null -> null
                 else -> getEnv(eId)
             }
 
-            Job(id, env, tasks)
+            Job(id, name, env, tasks)
         }
     }
 }

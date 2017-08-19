@@ -105,13 +105,14 @@ object SerializationTest : Spek({
                 RunWhen.PASSED)
             val job = Job(
                 "job1",
+                "Test",
                 env,
                 immutableListOf(task)
             )
 
             it("should give a JSON String of it") {
-                assertEquals("{\"id\":\"job1\",\"envId\":\"env1\"," +
-                    "\"tasks\":[\"task1\"]}", job.toJson())
+                assertEquals("{\"id\":\"job1\",\"name\":\"Test\"," +
+                    "\"envId\":\"env1\",\"tasks\":[\"task1\"]}", job.toJson())
             }
         }
 
@@ -128,11 +129,12 @@ object SerializationTest : Spek({
                 RunWhen.PASSED)
             val job = Job(
                 "job1",
+                "Test",
                 env,
                 immutableListOf(task)
             )
-            val jobJ = "{\"id\":\"job1\",\"envId\":\"env1\"," +
-                "\"tasks\":[\"task1\"]}"
+            val jobJ = "{\"id\":\"job1\",\"name\":\"Test\", " +
+                "\"envId\":\"env1\",\"tasks\":[\"task1\"]}"
 
             putEnv(env)
             putJob(job)

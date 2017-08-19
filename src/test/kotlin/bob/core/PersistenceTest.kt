@@ -64,6 +64,7 @@ object PersistenceTest : Spek({
             putEnv(env)
             putJob(Job(
                 "job1",
+                "Test Job",
                 env,
                 tasks = immutableListOf()
             ))
@@ -115,6 +116,7 @@ object PersistenceTest : Spek({
             putEnv(env)
             putJob(Job(
                 "job1",
+                "Test Job",
                 env,
                 tasks = immutableListOf(task)
             ))

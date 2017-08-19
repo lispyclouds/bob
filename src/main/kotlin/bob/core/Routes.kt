@@ -204,6 +204,7 @@ fun Application.module() {
                                 id != null && options != null -> {
                                     val job = Job(
                                         id,
+                                        options.name,
                                         options.env,
                                         options.tasks
                                     )

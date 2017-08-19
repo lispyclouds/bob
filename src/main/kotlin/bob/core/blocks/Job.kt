@@ -22,6 +22,7 @@ import kotlinx.collections.immutable.ImmutableList
 data class Job(
     // TODO: 6: Find a better way to serialize
     val id: String?,
+    val name: String,
     val env: Env?,
     val tasks: ImmutableList<Task>
 )
