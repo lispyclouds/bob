@@ -17,7 +17,6 @@
 
 package bob.core
 
-import bob.core.primitives.Tag
 import bob.core.primitives.env.Env
 import bob.core.primitives.env.delEnv
 import bob.core.primitives.env.getEnv
@@ -30,6 +29,10 @@ import bob.core.primitives.job.getJob
 import bob.core.primitives.job.jsonToJob
 import bob.core.primitives.job.putJob
 import bob.core.primitives.job.toJson
+import bob.core.primitives.tag.Tag
+import bob.core.primitives.tag.delTag
+import bob.core.primitives.tag.getTag
+import bob.core.primitives.tag.putTag
 import bob.core.primitives.task.Task
 import bob.core.primitives.task.delTask
 import bob.core.primitives.task.getTask

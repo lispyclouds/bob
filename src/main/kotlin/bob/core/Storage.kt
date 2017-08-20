@@ -17,15 +17,11 @@
 
 package bob.core
 
-import bob.core.primitives.Tag
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.ReferenceOption.CASCADE
 import org.jetbrains.exposed.sql.ReferenceOption.RESTRICT
 import org.jetbrains.exposed.sql.SchemaUtils.createMissingTablesAndColumns
 import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object Envs : Table() {
@@ -75,22 +71,4 @@ fun initStorage(url: String, driver: String) {
             Tags
         )
     }
-}
-
-fun putTag(tag: Tag) = transaction {
-    if (Tags.select { Tags.name eq tag.name }.empty()) {
-        Tags.insert { it[name] = tag.name }
-    }
-}
-
-fun getTag(name: String) = transaction {
-    if (Tags.select { Tags.name eq name }.empty()) {
-        null
-    } else {
-        Tag(name)
-    }
-}
-
-fun delTag(name: String) = transaction {
-    Tags.deleteWhere { Tags.name eq name }
 }
