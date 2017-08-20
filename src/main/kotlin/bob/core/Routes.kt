@@ -39,6 +39,7 @@ import org.jetbrains.ktor.routing.get
 import org.jetbrains.ktor.routing.put
 import org.jetbrains.ktor.routing.route
 
+@Suppress("Destructure")
 fun Application.module() {
     install(StatusPages) {
         status(HttpStatusCode.NotFound) {
