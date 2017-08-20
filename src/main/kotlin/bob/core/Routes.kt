@@ -22,10 +22,11 @@ import bob.core.blocks.Job
 import bob.core.blocks.Tag
 import bob.core.blocks.Task
 import bob.util.deleteEntity
-import bob.util.putIfCorrect
+import bob.util.doIfParamsValid
 import bob.util.respondIfExists
 import bob.util.respondWith
 import bob.util.respondWith404
+import bob.util.respondWithBadRequest
 import bob.util.respondWithError
 import org.jetbrains.ktor.application.Application
 import org.jetbrains.ktor.application.install
@@ -79,7 +80,13 @@ fun Application.module() {
                                 "variables": $rawVars
                             }"""
 
-                            putIfCorrect(call, envJson, ::jsonToEnv, ::putEnv)
+                            val entity = jsonToEnv(envJson)
+
+                            when (entity) {
+                                null -> respondWithBadRequest(call)
+                                else -> putEnv(entity)
+                            }
+
                             respondWith(call, "Ok")
                         }
                     }
@@ -98,49 +105,24 @@ fun Application.module() {
                 }
 
                 put {
-                    val id = call.parameters["id"]
-                    val taskOptions = call.receive<String>()
+                    doIfParamsValid(call, deserializeUsing = ::jsonToTask) { id, entity ->
+                        val task = Task(
+                            id,
+                            entity.jobId,
+                            entity.type,
+                            entity.command,
+                            entity.runWhen,
+                            entity.workingDirectory
+                        )
 
-                    when {
-                        taskOptions.isEmpty() -> {
+                        if (putTask(task))
+                            respondWith(call, "Ok")
+                        else
                             respondWith(
                                 call,
-                                "Invalid Task provided",
+                                "Invalid Job ID",
                                 HttpStatusCode.BadRequest
                             )
-                        }
-                        else -> {
-                            val options = jsonToTask(taskOptions)
-
-                            when {
-                                id != null && options != null -> {
-                                    val task = Task(
-                                        id,
-                                        options.jobId,
-                                        options.type,
-                                        options.command,
-                                        options.runWhen,
-                                        options.workingDirectory
-                                    )
-
-                                    if (putTask(task))
-                                        respondWith(call, "Ok")
-                                    else
-                                        respondWith(
-                                            call,
-                                            "Invalid Job ID",
-                                            HttpStatusCode.BadRequest
-                                        )
-                                }
-                                else -> {
-                                    respondWith(
-                                        call,
-                                        "Invalid Task options provided",
-                                        HttpStatusCode.BadRequest
-                                    )
-                                }
-                            }
-                        }
                     }
                 }
 
@@ -157,41 +139,16 @@ fun Application.module() {
                 }
 
                 put {
-                    val id = call.parameters["id"]
-                    val jobOptions = call.receive<String>()
+                    doIfParamsValid(call, deserializeUsing = ::jsonToJob) { id, entity ->
+                        val job = Job(
+                            id,
+                            entity.name,
+                            entity.env,
+                            entity.tasks
+                        )
 
-                    when {
-                        jobOptions.isEmpty() -> {
-                            respondWith(
-                                call,
-                                "Invalid Job provided",
-                                HttpStatusCode.BadRequest
-                            )
-                        }
-                        else -> {
-                            val options = jsonToJob(jobOptions)
-
-                            when {
-                                id != null && options != null -> {
-                                    val job = Job(
-                                        id,
-                                        options.name,
-                                        options.env,
-                                        options.tasks
-                                    )
-
-                                    putJob(job)
-                                    respondWith(call, "Ok")
-                                }
-                                else -> {
-                                    respondWith(
-                                        call,
-                                        "Invalid parameters provided",
-                                        HttpStatusCode.BadRequest
-                                    )
-                                }
-                            }
-                        }
+                        putJob(job)
+                        respondWith(call, "Ok")
                     }
                 }
 

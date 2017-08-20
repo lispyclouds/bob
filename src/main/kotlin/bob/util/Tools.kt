@@ -23,6 +23,7 @@ import com.google.gson.Gson
 import org.jetbrains.ktor.application.ApplicationCall
 import org.jetbrains.ktor.http.ContentType
 import org.jetbrains.ktor.http.HttpStatusCode
+import org.jetbrains.ktor.request.receive
 import org.jetbrains.ktor.response.respondText
 
 fun generateID() = java.util.UUID.randomUUID().toString()
@@ -93,17 +94,6 @@ suspend fun <T> respondIfExists(call: ApplicationCall,
     }
 }
 
-suspend fun <T> putIfCorrect(call: ApplicationCall, requestJson: String,
-                             deserializeUsing: (String) -> T?,
-                             putUsing: (T) -> Unit) {
-    val entity = deserializeUsing(requestJson)
-
-    when (entity) {
-        null -> respondWithBadRequest(call)
-        else -> putUsing(entity)
-    }
-}
-
 suspend fun deleteEntity(call: ApplicationCall, using: (String) -> Int,
                          param: String = "id") {
     val id = call.parameters[param]
@@ -113,6 +103,25 @@ suspend fun deleteEntity(call: ApplicationCall, using: (String) -> Int,
         else -> {
             using(id)
             respondWith(call, "Ok")
+        }
+    }
+}
+
+suspend fun <T> doIfParamsValid(call: ApplicationCall, param: String = "id",
+                                deserializeUsing: (String) -> T?,
+                                toDo: suspend (String, T) -> Unit) {
+    val id = call.parameters[param]
+    val options = call.receive<String>()
+
+    when {
+        id == null || options.isEmpty() -> respondWithBadRequest(call)
+        else -> {
+            val entity = deserializeUsing(options)
+
+            when (entity) {
+                null -> respondWithBadRequest(call)
+                else -> toDo(id, entity)
+            }
         }
     }
 }
