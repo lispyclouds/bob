@@ -8,6 +8,9 @@
 Bob is a minimal and modular CI/CD engine running entirely as an API.
 Work in progress.
 
+Documentation coming soon.
+See [this](https://github.com/lispyclouds/bob/issues/1) for more details.
+
 ## Build requirements
 - Preferably any *nix environment
 - JDK 1.8+
