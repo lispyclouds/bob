@@ -78,7 +78,7 @@ dependencies {
 }
 
 junitPlatform {
-    // TODO: 7: Remove when https://github.com/JetBrains/spek/pull/247 works
+    // TODO 7: Remove when https://github.com/JetBrains/spek/pull/247 works
     platformVersion "1.0.0-M4"
 
     filters {

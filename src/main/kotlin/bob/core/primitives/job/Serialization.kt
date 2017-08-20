@@ -15,9 +15,6 @@
  * along with Bob. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// TODO: 3: Remove when GSON has @Required
-@file:Suppress("SENSELESS_COMPARISON")
-
 package bob.core.primitives.job
 
 import bob.core.primitives.env.getEnv
@@ -34,7 +31,7 @@ private data class RawJob(
     val tasks: List<String>
 )
 
-// TODO: Remove !! when (1) is done
+// TODO 8: Remove !! when (1) is done
 fun Job.toJson() = jsonStringOf(RawJob(
     this.id,
     this.name,
@@ -50,6 +47,8 @@ fun jsonToJob(json: String) = try {
         else -> getEnv(job.envId)
     }
 
+    // TODO 4: Remove when Gson has @Required
+    @Suppress("SENSELESS_COMPARISON")
     when {
         job?.tasks == null || job.name == null -> null
         else -> {

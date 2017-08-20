@@ -26,7 +26,7 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun putEnv(env: Env) = transaction {
-    // TODO: 2: Optimize
+    // TODO 2: Optimize
     delEnv(env.id)
 
     bob.core.Envs.insert { it[id] = env.id }

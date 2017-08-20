@@ -15,9 +15,6 @@
  * along with Bob. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// TODO: 3: Remove when GSON has @Required
-@file:Suppress("SENSELESS_COMPARISON")
-
 package bob.core.primitives.task
 
 import bob.util.jsonStringOf
@@ -29,6 +26,8 @@ fun Task.toJson() = jsonStringOf(this)
 fun jsonToTask(json: String) = try {
     val task = Gson().fromJson(json, Task::class.java)
 
+    // TODO 3: Remove when Gson has @Required
+    @Suppress("SENSELESS_COMPARISON")
     when {
         task?.type == null || task.runWhen == null -> null
         else -> Task(
