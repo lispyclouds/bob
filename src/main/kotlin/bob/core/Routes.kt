@@ -168,7 +168,7 @@ fun Application.module() {
                     val name = call.parameters["name"]
 
                     when (name) {
-                        null -> respondWith404(call)
+                        null -> respondWithBadRequest(call)
                         else -> {
                             putTag(Tag(name))
                             respondWith(call, "Ok")
