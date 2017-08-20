@@ -15,32 +15,24 @@
  * along with Bob. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bob.core.blocks
+package bob.core.primitives.env
 
 import com.google.gson.annotations.SerializedName
+import kotlinx.collections.immutable.ImmutableMap
 
-enum class TaskType {
-    @SerializedName("fetch")
-    FETCH,
-    @SerializedName("shell")
-    SHELL
-}
+data class Env(
+    val id: String,
 
-enum class RunWhen {
-    @SerializedName("failed")
-    FAILED,
-    @SerializedName("passed")
-    PASSED,
-    @SerializedName("any")
-    ANY
-}
+    @SerializedName("variables")
+    val vars: ImmutableMap<String, String>
+)
 
-data class Task(
-    // TODO: 1: Find a better way to serialize
-    val id: String?,
-    val jobId: String,
-    val type: TaskType,
-    val command: String,
-    val runWhen: RunWhen,
-    val workingDirectory: String? = "."
+fun addVarIn(env: Env, key: String, value: String) = Env(
+    env.id,
+    env.vars.put(key, value)
+)
+
+fun removeVarFrom(env: Env, key: String) = Env(
+    env.id,
+    env.vars.remove(key)
 )

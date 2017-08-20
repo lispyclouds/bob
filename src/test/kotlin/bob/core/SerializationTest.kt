@@ -17,11 +17,20 @@
 
 package bob.core
 
-import bob.core.blocks.Env
-import bob.core.blocks.Job
-import bob.core.blocks.RunWhen
-import bob.core.blocks.Task
-import bob.core.blocks.TaskType
+import bob.core.primitives.env.Env
+import bob.core.primitives.env.jsonToEnv
+import bob.core.primitives.env.putEnv
+import bob.core.primitives.env.toJson
+import bob.core.primitives.job.Job
+import bob.core.primitives.job.jsonToJob
+import bob.core.primitives.job.putJob
+import bob.core.primitives.job.toJson
+import bob.core.primitives.task.RunWhen
+import bob.core.primitives.task.Task
+import bob.core.primitives.task.TaskType
+import bob.core.primitives.task.jsonToTask
+import bob.core.primitives.task.putTask
+import bob.core.primitives.task.toJson
 import kotlinx.collections.immutable.immutableListOf
 import kotlinx.collections.immutable.immutableMapOf
 import org.jetbrains.spek.api.Spek

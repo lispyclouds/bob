@@ -15,6 +15,24 @@
  * along with Bob. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bob.core.blocks
+package bob.core.primitives.env
 
-data class Tag(val name: String)
+import bob.util.jsonStringOf
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
+import kotlinx.collections.immutable.toImmutableMap
+
+private data class RawEnv(
+    val id: String,
+    val variables: Map<String, String>
+)
+
+fun Env.toJson() = jsonStringOf(this)
+
+fun jsonToEnv(json: String) = try {
+    val env = Gson().fromJson(json, RawEnv::class.java)
+
+    if (env != null) Env(env.id, env.variables.toImmutableMap()) else null
+} catch (_: JsonSyntaxException) {
+    null
+}

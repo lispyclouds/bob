@@ -15,24 +15,16 @@
  * along with Bob. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bob.core.blocks
+package bob.core.primitives.job
 
-import com.google.gson.annotations.SerializedName
-import kotlinx.collections.immutable.ImmutableMap
+import bob.core.primitives.env.Env
+import bob.core.primitives.task.Task
+import kotlinx.collections.immutable.ImmutableList
 
-data class Env(
-    val id: String,
-
-    @SerializedName("variables")
-    val vars: ImmutableMap<String, String>
-)
-
-fun addVarIn(env: Env, key: String, value: String) = Env(
-    env.id,
-    env.vars.put(key, value)
-)
-
-fun removeVarFrom(env: Env, key: String) = Env(
-    env.id,
-    env.vars.remove(key)
+data class Job(
+    // TODO: 6: Find a better way to serialize
+    val id: String?,
+    val name: String,
+    val env: Env?,
+    val tasks: ImmutableList<Task>
 )

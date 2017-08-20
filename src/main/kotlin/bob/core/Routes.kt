@@ -17,10 +17,25 @@
 
 package bob.core
 
-import bob.core.blocks.Env
-import bob.core.blocks.Job
-import bob.core.blocks.Tag
-import bob.core.blocks.Task
+import bob.core.primitives.Tag
+import bob.core.primitives.env.Env
+import bob.core.primitives.env.delEnv
+import bob.core.primitives.env.getEnv
+import bob.core.primitives.env.jsonToEnv
+import bob.core.primitives.env.putEnv
+import bob.core.primitives.env.toJson
+import bob.core.primitives.job.Job
+import bob.core.primitives.job.delJob
+import bob.core.primitives.job.getJob
+import bob.core.primitives.job.jsonToJob
+import bob.core.primitives.job.putJob
+import bob.core.primitives.job.toJson
+import bob.core.primitives.task.Task
+import bob.core.primitives.task.delTask
+import bob.core.primitives.task.getTask
+import bob.core.primitives.task.jsonToTask
+import bob.core.primitives.task.putTask
+import bob.core.primitives.task.toJson
 import bob.util.deleteEntity
 import bob.util.doIfParamsValid
 import bob.util.respondIfExists

@@ -17,12 +17,21 @@
 
 package bob.core
 
-import bob.core.blocks.Env
-import bob.core.blocks.Job
-import bob.core.blocks.RunWhen
-import bob.core.blocks.Tag
-import bob.core.blocks.Task
-import bob.core.blocks.TaskType
+import bob.core.primitives.Tag
+import bob.core.primitives.env.Env
+import bob.core.primitives.env.delEnv
+import bob.core.primitives.env.getEnv
+import bob.core.primitives.env.putEnv
+import bob.core.primitives.job.Job
+import bob.core.primitives.job.delJob
+import bob.core.primitives.job.getJob
+import bob.core.primitives.job.putJob
+import bob.core.primitives.task.RunWhen
+import bob.core.primitives.task.Task
+import bob.core.primitives.task.TaskType
+import bob.core.primitives.task.delTask
+import bob.core.primitives.task.getTask
+import bob.core.primitives.task.putTask
 import kotlinx.collections.immutable.immutableListOf
 import kotlinx.collections.immutable.immutableMapOf
 import org.jetbrains.spek.api.Spek
@@ -35,7 +44,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.fail
 
-object PersistenceTest : Spek({
+object StorageTest : Spek({
     given("Bob Storage") {
         val db = File.createTempFile("bob", ".db")
 

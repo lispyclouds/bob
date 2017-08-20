@@ -15,8 +15,11 @@
  * along with Bob. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bob.core.blocks
+package bob.core.primitives
 
+import bob.core.primitives.env.Env
+import bob.core.primitives.env.addVarIn
+import bob.core.primitives.env.removeVarFrom
 import bob.util.generateID
 import kotlinx.collections.immutable.immutableMapOf
 import org.jetbrains.spek.api.Spek

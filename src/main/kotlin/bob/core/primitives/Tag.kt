@@ -15,14 +15,6 @@
  * along with Bob. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bob.core.blocks
+package bob.core.primitives
 
-import kotlinx.collections.immutable.ImmutableList
-
-data class Job(
-    // TODO: 6: Find a better way to serialize
-    val id: String?,
-    val name: String,
-    val env: Env?,
-    val tasks: ImmutableList<Task>
-)
+data class Tag(val name: String)
